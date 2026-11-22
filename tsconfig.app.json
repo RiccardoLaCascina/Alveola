@@ -12,6 +12,7 @@
     "verbatimModuleSyntax": true,
     "allowImportingTsExtensions": true,
     "skipLibCheck": true,
+    "paths": { "@/*": ["./src/*"] },
 
     "strict": true,
     "noUnusedLocals": true,

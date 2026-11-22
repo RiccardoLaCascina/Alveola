@@ -1,9 +1,9 @@
 # data
 
-Dove vivono i dati salvati sul telefono (IndexedDB, tramite Dexie).
+Dove vivono i dati salvati sul telefono.
 
-- `db.ts`: definizione del database e delle sue tabelle
-- `proveRepository.ts`: salva, legge ed elenca le prove del diario
+- `legacyDraft.ts`: importa la bozza salvata dalla prima versione (`banco-impasti-bozza`), così chi la usava ritrova il suo impasto.
+- In arrivo: `db.ts` (IndexedDB con Dexie) e `proveRepository.ts` per il diario delle prove.
 
-I componenti non parlano mai direttamente con il database: passano dal repository.
-Così, se un domani i dati andranno anche su un server, cambia solo questo livello.
+La bozza dell'impasto in lavorazione è gestita da `src/state/doughStore.ts` (Zustand, salvata in localStorage
+con la chiave `alveola-impasto-bozza` e validata con lo schema Zod a ogni avvio).

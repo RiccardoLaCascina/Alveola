@@ -1,10 +1,13 @@
-import { Block } from "../../components/Block.tsx";
+import { PageTitle } from "@/components/PageTitle";
+import { CompositionCard } from "./CompositionCard";
+import { MaturationCard } from "./MaturationCard";
 
 export function RisultatiPage() {
   return (
     <>
-      <Block title="Idratazione e percentuali" hint="Calcolate dalle funzioni in src/domain/impasto.ts." />
-      <Block title="Lievito, acqua e programma" hint="Calcolati dalle funzioni in src/domain/." />
+      <PageTitle title="Risultati" subtitle="Cosa dicono i numeri del tuo impasto." />
+      <CompositionCard />
+      <MaturationCard />
     </>
   );
 }

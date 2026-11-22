@@ -1,0 +1,659 @@
+[
+  {
+    "name": "default",
+    "state": {
+      "flour": 1000,
+      "water": 650,
+      "salt": 28,
+      "fat": 0,
+      "yeastType": "fresh",
+      "yeast": 2,
+      "piece": 270,
+      "pf": [],
+      "phases": [
+        {
+          "name": "Puntata",
+          "h": 2,
+          "t": 22
+        },
+        {
+          "name": "Maturazione in frigo",
+          "h": 24,
+          "t": 4
+        },
+        {
+          "name": "Appretto",
+          "h": 4,
+          "t": 22
+        }
+      ],
+      "tfi": 24,
+      "tFlour": 20,
+      "tPf": 18,
+      "mixer": "5",
+      "wFlour": "",
+      "start": "2026-11-23T08:00"
+    },
+    "shown": {
+      "hydration": "65,0%",
+      "hydrationNote": "Idratazione media, adatta a molte pizze e pani.",
+      "total": "1680 g",
+      "bakers": [
+        [
+          "Farina totale",
+          "1000 g",
+          "100,0 %"
+        ],
+        [
+          "Acqua totale",
+          "650 g",
+          "65,0 %"
+        ],
+        [
+          "Sale",
+          "28 g",
+          "2,8 %"
+        ],
+        [
+          "Lievito (equiv. fresco)",
+          "2,0 g",
+          "0,2 %"
+        ],
+        [
+          "Peso impasto",
+          "1680 g",
+          ""
+        ]
+      ],
+      "compositionFlags": [],
+      "pieces": "6 panetti",
+      "rest": "avanzano 60 g",
+      "yeast": "2,2 g",
+      "yeastNote": "0,22 % sulla farina totale · secco 0,7 g",
+      "maturation": [
+        [
+          "Durata totale",
+          "30,0 h"
+        ],
+        [
+          "Di cui al freddo",
+          "24,0 h"
+        ],
+        [
+          "Equivalenti a 24 °C",
+          "8,2 h"
+        ],
+        [
+          "Lievito nell’impasto ora",
+          "2,0 g · 0,20 %"
+        ]
+      ],
+      "waterTemp": "18 °C",
+      "w": "W 300–350",
+      "wNote": "farina forte",
+      "maturationFlags": [],
+      "schedule": [
+        [
+          "Impasto",
+          "lun 23, 08:00"
+        ],
+        [
+          "Puntata (2,0 h)",
+          "lun 23, 08:00"
+        ],
+        [
+          "Maturazione in frigo (24,0 h)",
+          "lun 23, 10:00"
+        ],
+        [
+          "Appretto (4,0 h)",
+          "mar 24, 10:00"
+        ],
+        [
+          "Pronto da cuocere",
+          "mar 24, 14:00"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "biga-poolish-secco",
+    "state": {
+      "flour": 600,
+      "water": 420,
+      "salt": 25,
+      "fat": 30,
+      "yeastType": "dry",
+      "yeast": 1,
+      "piece": 250,
+      "pf": [
+        {
+          "type": "biga",
+          "weight": 450,
+          "hyd": 45,
+          "yeast": 3
+        },
+        {
+          "type": "poolish",
+          "weight": 400,
+          "hyd": 100,
+          "yeast": 0.4
+        }
+      ],
+      "phases": [
+        {
+          "name": "Puntata",
+          "h": 1,
+          "t": 24
+        },
+        {
+          "name": "Frigo",
+          "h": 48,
+          "t": 4
+        },
+        {
+          "name": "Appretto",
+          "h": 5,
+          "t": 21
+        }
+      ],
+      "tfi": 25,
+      "tFlour": 18,
+      "tPf": 16,
+      "mixer": "3.5",
+      "wFlour": "280",
+      "start": "2026-11-23T09:30"
+    },
+    "shown": {
+      "hydration": "68,4%",
+      "hydrationNote": "Idratazione media, adatta a molte pizze e pani.",
+      "total": "1929 g",
+      "bakers": [
+        [
+          "Farina totale",
+          "1110 g",
+          "100,0 %"
+        ],
+        [
+          "Acqua totale",
+          "760 g",
+          "68,4 %"
+        ],
+        [
+          "Sale",
+          "25 g",
+          "2,3 %"
+        ],
+        [
+          "Lievito (equiv. fresco)",
+          "6,4 g",
+          "0,6 %"
+        ],
+        [
+          "Olio / grassi",
+          "30 g",
+          "2,7 %"
+        ],
+        [
+          "Farina prefermentata",
+          "510 g",
+          "46,0 %"
+        ],
+        [
+          "Peso impasto",
+          "1929 g",
+          ""
+        ]
+      ],
+      "compositionFlags": [
+        {
+          "tone": "info",
+          "message": "1,0 g di secco corrispondono a circa 3,0 g di fresco."
+        },
+        {
+          "tone": "info",
+          "message": "Il 46 % della farina è prefermentata."
+        }
+      ],
+      "pieces": "7 panetti",
+      "rest": "avanzano 179 g",
+      "yeast": "1,5 g",
+      "yeastNote": "0,14 % sulla farina totale · secco 0,5 g",
+      "maturation": [
+        [
+          "Durata totale",
+          "54,0 h"
+        ],
+        [
+          "Di cui al freddo",
+          "48,0 h"
+        ],
+        [
+          "Equivalenti a 24 °C",
+          "11,3 h"
+        ],
+        [
+          "Lievito nell’impasto ora",
+          "3,0 g · 0,27 %"
+        ]
+      ],
+      "waterTemp": "31 °C",
+      "w": "W 340–380",
+      "wNote": "farina molto forte",
+      "maturationFlags": [
+        {
+          "tone": "info",
+          "message": "I prefermenti accelerano la maturazione: in chiusura puoi ridurre il lievito rispetto alla stima."
+        },
+        {
+          "tone": "warning",
+          "message": "Hai circa 1,9 volte il lievito stimato: rischio di sovralievitazione."
+        },
+        {
+          "tone": "warning",
+          "message": "La tua farina (W 280) è debole per 54 h di maturazione: accorcia i tempi o taglia con una farina più forte."
+        }
+      ],
+      "schedule": [
+        [
+          "Impasto",
+          "lun 23, 09:30"
+        ],
+        [
+          "Puntata (1,0 h)",
+          "lun 23, 09:30"
+        ],
+        [
+          "Frigo (48,0 h)",
+          "lun 23, 10:30"
+        ],
+        [
+          "Appretto (5,0 h)",
+          "mer 25, 10:30"
+        ],
+        [
+          "Pronto da cuocere",
+          "mer 25, 15:30"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "madre-alta-idratazione",
+    "state": {
+      "flour": 900,
+      "water": 760,
+      "salt": 22,
+      "fat": 0,
+      "yeastType": "none",
+      "yeast": 0,
+      "piece": 1100,
+      "pf": [
+        {
+          "type": "lmLiquid",
+          "weight": 200,
+          "hyd": 100,
+          "yeast": 0
+        }
+      ],
+      "phases": [
+        {
+          "name": "Puntata",
+          "h": 4,
+          "t": 26
+        },
+        {
+          "name": "Appretto",
+          "h": 3,
+          "t": 28
+        }
+      ],
+      "tfi": 26,
+      "tFlour": 22,
+      "tPf": 24,
+      "mixer": "4",
+      "wFlour": "250",
+      "start": "2026-11-24T06:00"
+    },
+    "shown": {
+      "hydration": "86,0%",
+      "hydrationNote": "Idratazione molto alta: farina forte e buona tecnica.",
+      "total": "1882 g",
+      "bakers": [
+        [
+          "Farina totale",
+          "1000 g",
+          "100,0 %"
+        ],
+        [
+          "Acqua totale",
+          "860 g",
+          "86,0 %"
+        ],
+        [
+          "Sale",
+          "22 g",
+          "2,2 %"
+        ],
+        [
+          "Lievito (equiv. fresco)",
+          "0 g",
+          "0,0 %"
+        ],
+        [
+          "Farina prefermentata",
+          "100 g",
+          "10,0 %"
+        ],
+        [
+          "Lievito madre",
+          "200 g",
+          "20,0 %"
+        ],
+        [
+          "Peso impasto",
+          "1882 g",
+          ""
+        ]
+      ],
+      "compositionFlags": [
+        {
+          "tone": "info",
+          "message": "Il 10 % della farina è prefermentata."
+        }
+      ],
+      "pieces": "1 panetto",
+      "rest": "avanzano 782 g",
+      "yeast": "1,8 g",
+      "yeastNote": "0,18 % sulla farina totale · secco 0,6 g",
+      "maturation": [
+        [
+          "Durata totale",
+          "7,0 h"
+        ],
+        [
+          "Di cui al freddo",
+          "0,0 h"
+        ],
+        [
+          "Equivalenti a 24 °C",
+          "9,3 h"
+        ],
+        [
+          "Lievito nell’impasto ora",
+          "0,0 g · 0,00 %"
+        ]
+      ],
+      "waterTemp": "22 °C",
+      "w": "W 240–290",
+      "wNote": "farina media, alzata per l’alta idratazione",
+      "maturationFlags": [
+        {
+          "tone": "warning",
+          "message": "Con il lievito madre la dose di lievito di birra non è necessaria: il calcolo vale solo se lo usi in aggiunta."
+        },
+        {
+          "tone": "info",
+          "message": "La tua farina (W 250) è adatta a questi tempi."
+        }
+      ],
+      "schedule": [
+        [
+          "Impasto",
+          "mar 24, 06:00"
+        ],
+        [
+          "Puntata (4,0 h)",
+          "mar 24, 06:00"
+        ],
+        [
+          "Appretto (3,0 h)",
+          "mar 24, 10:00"
+        ],
+        [
+          "Pronto da cuocere",
+          "mar 24, 13:00"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "estremi",
+    "state": {
+      "flour": 1000,
+      "water": 550,
+      "salt": 40,
+      "fat": 0,
+      "yeastType": "fresh",
+      "yeast": 30,
+      "piece": 0,
+      "pf": [],
+      "phases": [
+        {
+          "name": "Veloce",
+          "h": 1,
+          "t": 20
+        }
+      ],
+      "tfi": 30,
+      "tFlour": 5,
+      "tPf": 18,
+      "mixer": "1",
+      "wFlour": "420",
+      "start": "2026-11-25T23:30"
+    },
+    "shown": {
+      "hydration": "55,0%",
+      "hydrationNote": "Idratazione medio-bassa, impasto facile da gestire.",
+      "total": "1620 g",
+      "bakers": [
+        [
+          "Farina totale",
+          "1000 g",
+          "100,0 %"
+        ],
+        [
+          "Acqua totale",
+          "550 g",
+          "55,0 %"
+        ],
+        [
+          "Sale",
+          "40 g",
+          "4,0 %"
+        ],
+        [
+          "Lievito (equiv. fresco)",
+          "30 g",
+          "3,0 %"
+        ],
+        [
+          "Peso impasto",
+          "1620 g",
+          ""
+        ]
+      ],
+      "compositionFlags": [
+        {
+          "tone": "warning",
+          "message": "Sale al 4,0 %: sopra la media, può frenare la lievitazione."
+        }
+      ],
+      "pieces": "—",
+      "rest": "",
+      "yeast": "40 g",
+      "yeastNote": "4,00 % sulla farina totale · secco 13,3 g",
+      "maturation": [
+        [
+          "Durata totale",
+          "1,0 h"
+        ],
+        [
+          "Di cui al freddo",
+          "0,0 h"
+        ],
+        [
+          "Equivalenti a 24 °C",
+          "0,7 h"
+        ],
+        [
+          "Lievito nell’impasto ora",
+          "30,0 g · 3,00 %"
+        ]
+      ],
+      "waterTemp": "46 °C",
+      "w": "W 170–220",
+      "wNote": "farina debole",
+      "maturationFlags": [
+        {
+          "tone": "warning",
+          "message": "Tempo molto breve: la stima è poco affidabile sotto 1,5 h equivalenti."
+        },
+        {
+          "tone": "warning",
+          "message": "Acqua oltre i 38 °C: rischi di danneggiare il lievito. Alza la temperatura della farina o abbassa quella finale."
+        },
+        {
+          "tone": "info",
+          "message": "La tua farina (W 420) è più forte del necessario: puoi allungare la maturazione."
+        }
+      ],
+      "schedule": [
+        [
+          "Impasto",
+          "mer 25, 23:30"
+        ],
+        [
+          "Veloce (1,0 h)",
+          "mer 25, 23:30"
+        ],
+        [
+          "Pronto da cuocere",
+          "gio 26, 00:30"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "senza-sale-ne-acqua",
+    "state": {
+      "flour": 500,
+      "water": 0,
+      "salt": 0,
+      "fat": 0,
+      "yeastType": "fresh",
+      "yeast": 0.2,
+      "piece": 200,
+      "pf": [],
+      "phases": [
+        {
+          "name": "Frigo lungo",
+          "h": 72,
+          "t": 2
+        },
+        {
+          "name": "Appretto",
+          "h": 6,
+          "t": 18
+        }
+      ],
+      "tfi": 23,
+      "tFlour": 20,
+      "tPf": 18,
+      "mixer": "5",
+      "wFlour": "150",
+      "start": "2026-11-23T20:15"
+    },
+    "shown": {
+      "hydration": "0,0%",
+      "hydrationNote": "Inserisci farina e acqua per iniziare.",
+      "total": "500 g",
+      "bakers": [
+        [
+          "Farina totale",
+          "500 g",
+          "100,0 %"
+        ],
+        [
+          "Acqua totale",
+          "0 g",
+          "0,0 %"
+        ],
+        [
+          "Sale",
+          "0 g",
+          "0,0 %"
+        ],
+        [
+          "Lievito (equiv. fresco)",
+          "0,2 g",
+          "0,0 %"
+        ],
+        [
+          "Peso impasto",
+          "500 g",
+          ""
+        ]
+      ],
+      "compositionFlags": [
+        {
+          "tone": "warning",
+          "message": "Nessun sale inserito."
+        }
+      ],
+      "pieces": "2 panetti",
+      "rest": "avanzano 100 g",
+      "yeast": "0,7 g",
+      "yeastNote": "0,14 % sulla farina totale · secco 0,2 g",
+      "maturation": [
+        [
+          "Durata totale",
+          "78,0 h"
+        ],
+        [
+          "Di cui al freddo",
+          "72,0 h"
+        ],
+        [
+          "Equivalenti a 24 °C",
+          "11,5 h"
+        ],
+        [
+          "Lievito nell’impasto ora",
+          "0,2 g · 0,04 %"
+        ]
+      ],
+      "waterTemp": "—",
+      "w": "W 370–420",
+      "wNote": "farina di forza o manitoba",
+      "maturationFlags": [
+        {
+          "tone": "warning",
+          "message": "Hai circa il 29 % del lievito stimato: l’impasto potrebbe restare indietro."
+        },
+        {
+          "tone": "warning",
+          "message": "La tua farina (W 150) è debole per 78 h di maturazione: accorcia i tempi o taglia con una farina più forte."
+        }
+      ],
+      "schedule": [
+        [
+          "Impasto",
+          "lun 23, 20:15"
+        ],
+        [
+          "Frigo lungo (72,0 h)",
+          "lun 23, 20:15"
+        ],
+        [
+          "Appretto (6,0 h)",
+          "gio 26, 20:15"
+        ],
+        [
+          "Pronto da cuocere",
+          "ven 27, 02:15"
+        ]
+      ]
+    }
+  }
+]

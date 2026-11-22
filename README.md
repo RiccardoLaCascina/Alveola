@@ -17,10 +17,16 @@ Pensata per pizzerie, ristoranti, pizza al taglio e alla pala. Si usa dal telefo
 |---|---|
 | Linguaggio | TypeScript |
 | Interfaccia | React |
+| Stile | Tailwind CSS v4 |
+| Componenti | shadcn/ui (su Radix UI): accessibili, copiati in `src/components/ui/` e modificabili |
+| Icone | Lucide |
+| Animazioni | Motion |
+| Font | Bricolage Grotesque (titoli), Geist (testo), inclusi nell'app per l'uso offline |
 | Build e server di sviluppo | Vite |
 | App installabile / offline | vite-plugin-pwa |
 | Navigazione | React Router (HashRouter) |
-| Dati sul telefono | IndexedDB con Dexie |
+| Stato | Zustand (bozza salvata in localStorage) |
+| Dati sul telefono | IndexedDB con Dexie (per il diario) |
 | Validazione dati | Zod |
 | Test | Vitest |
 
@@ -28,17 +34,21 @@ Pensata per pizzerie, ristoranti, pizza al taglio e alla pala. Si usa dal telefo
 
 ```
 src/
-├─ domain/      tipi e calcoli puri (niente React): impasto, lievito, temperature, prova
-├─ data/        database (Dexie) e repository
+├─ domain/      tipi e calcoli puri (niente React): impasto, lievito, temperature, farina, programma
+├─ state/       stato condiviso tra le schede (Zustand), salvato sul telefono
+├─ data/        dati salvati: import dalla prima versione, poi database (Dexie)
 ├─ features/    una cartella per scheda: impasto, tempi, risultati, diario
 ├─ components/  pezzi di interfaccia condivisi
-├─ app/         layout, barra delle schede, router
-└─ styles/      CSS globale
+│  └─ ui/       componenti shadcn/ui (button, card, input, select, slider, dialog, ...)
+├─ lib/         utilità (cn per unire classi Tailwind)
+├─ app/         layout, barra delle schede, router, tema chiaro/scuro
+└─ styles/      tema Alveola (colori, font, variabili per chiaro e scuro)
 public/icons/   icone dell'app
-legacy/         la prima versione in un solo file, da cui portare i calcoli
+legacy/         la prima versione in un solo file (riferimento per il test di parità)
+scripts/        strumenti: cattura dei valori della prima versione, prova di fumo su telefono emulato
 ```
 
-Percorso di ogni funzione: **componente → hook → dominio → repository → database**.
+Percorso di ogni funzione: **componente → hook/store → dominio** (calcoli) e **store → data** (salvataggio).
 
 ## Comandi
 
@@ -61,6 +71,13 @@ Poi:
 
 Nel browser, con F12 e poi Ctrl+Shift+M, puoi simulare lo schermo di un telefono.
 
+## Interfaccia
+
+- Tema in `src/styles/global.css`: chiaro "farina" e scuro "laboratorio di sera", con primary crosta dorata.
+  Colori di dominio pronti come classi Tailwind: `bg-flour`, `bg-water`, `bg-preferment`, `bg-cold`, `bg-mild`, `bg-warm`.
+- Nuovi componenti shadcn: `npx shadcn@latest add <nome>` (es. `tabs`, `chart`, `drawer`).
+- Import con alias: `@/components/...` invece di `../../components/...`.
+
 ## Rami
 
 - `development`: qui si integra il lavoro.
@@ -76,6 +93,12 @@ Il repository deve essere pubblico (con l'account gratuito Pages non funziona su
 
 Indirizzo: `https://riccardolacascina.github.io/Alveola/`
 Sul telefono: **iPhone** Condividi → Aggiungi alla schermata Home; **Android** menu ⋮ → Installa app.
+
+## Verifiche
+
+- `npm test`: test del dominio, compresa la **parità esatta** con la prima versione su 5 impasti.
+- `node scripts/smoke-mobile.mjs <url> <porta-debug> <cartella>`: apre l'app in Edge/Chrome headless come un iPhone,
+  prova le interazioni principali (scrivere, aggiungere una biga, "Usa questa dose", ricarica) e salva gli screenshot.
 
 ## Modelli di calcolo (dalla prima versione)
 

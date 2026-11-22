@@ -1,59 +1,53 @@
-import type { ReactNode } from "react";
 import { NavLink } from "react-router";
+import { motion } from "motion/react";
+import { ChartColumn, NotebookPen, Timer, Wheat, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-type Tab = { to: string; label: string; icon: ReactNode };
+type Tab = { to: string; label: string; icon: LucideIcon };
 
 const TABS: Tab[] = [
-  {
-    to: "/impasto",
-    label: "Impasto",
-    icon: (
-      <>
-        <ellipse cx="12" cy="13" rx="9" ry="6" />
-        <path d="M9 10l1.5 6M13 10l1.5 6" />
-      </>
-    ),
-  },
-  {
-    to: "/tempi",
-    label: "Tempi",
-    icon: (
-      <>
-        <circle cx="12" cy="13" r="8" />
-        <path d="M12 9v4l3 2M10 3h4" />
-      </>
-    ),
-  },
-  {
-    to: "/risultati",
-    label: "Risultati",
-    icon: <path d="M5 20V10M12 20V4M19 20v-7" />,
-  },
-  {
-    to: "/diario",
-    label: "Diario",
-    icon: (
-      <>
-        <path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z" />
-        <path d="M5 17a3 3 0 0 1 3-3h11M9 8h6" />
-      </>
-    ),
-  },
+  { to: "/impasto", label: "Impasto", icon: Wheat },
+  { to: "/tempi", label: "Tempi", icon: Timer },
+  { to: "/risultati", label: "Risultati", icon: ChartColumn },
+  { to: "/diario", label: "Diario", icon: NotebookPen },
 ];
 
-// NavLink sa se la sua rotta è attiva: in quel caso aggiunge aria-current="page",
-// che il CSS usa per evidenziare la scheda.
+// Barra a "pillola" sospesa in basso. NavLink sa se la sua rotta è attiva:
+// la scheda attiva riceve lo sfondo che scorre (motion layoutId) da una scheda all'altra.
 export function TabBar() {
   return (
-    <nav className="tabs" aria-label="Sezioni">
-      {TABS.map((tab) => (
-        <NavLink key={tab.to} to={tab.to}>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            {tab.icon}
-          </svg>
-          {tab.label}
-        </NavLink>
-      ))}
+    <nav
+      aria-label="Sezioni"
+      className="fixed inset-x-0 bottom-0 z-30 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+    >
+      <div className="mx-auto flex max-w-md items-center gap-1 rounded-full border border-border/70 bg-card/80 p-1.5 shadow-xl shadow-black/10 backdrop-blur-xl">
+        {TABS.map(({ to, label, icon: Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              cn(
+                "relative flex flex-1 flex-col items-center gap-0.5 rounded-full px-2 py-2 text-[0.7rem] font-medium transition-colors",
+                isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+              )
+            }
+          >
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <motion.span
+                    layoutId="tab-pill"
+                    className="absolute inset-0 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                  />
+                )}
+                <Icon className="relative size-5" strokeWidth={isActive ? 2.25 : 1.75} />
+                <span className="relative">{label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
+      </div>
     </nav>
   );
 }

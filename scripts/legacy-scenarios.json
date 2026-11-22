@@ -1,0 +1,44 @@
+[
+  {
+    "name": "default",
+    "state": {
+      "flour": 1000, "water": 650, "salt": 28, "fat": 0, "yeastType": "fresh", "yeast": 2, "piece": 270, "pf": [],
+      "phases": [{ "name": "Puntata", "h": 2, "t": 22 }, { "name": "Maturazione in frigo", "h": 24, "t": 4 }, { "name": "Appretto", "h": 4, "t": 22 }],
+      "tfi": 24, "tFlour": 20, "tPf": 18, "mixer": "5", "wFlour": "", "start": "2026-11-23T08:00"
+    }
+  },
+  {
+    "name": "biga-poolish-secco",
+    "state": {
+      "flour": 600, "water": 420, "salt": 25, "fat": 30, "yeastType": "dry", "yeast": 1, "piece": 250,
+      "pf": [{ "type": "biga", "weight": 450, "hyd": 45, "yeast": 3 }, { "type": "poolish", "weight": 400, "hyd": 100, "yeast": 0.4 }],
+      "phases": [{ "name": "Puntata", "h": 1, "t": 24 }, { "name": "Frigo", "h": 48, "t": 4 }, { "name": "Appretto", "h": 5, "t": 21 }],
+      "tfi": 25, "tFlour": 18, "tPf": 16, "mixer": "3.5", "wFlour": "280", "start": "2026-11-23T09:30"
+    }
+  },
+  {
+    "name": "madre-alta-idratazione",
+    "state": {
+      "flour": 900, "water": 760, "salt": 22, "fat": 0, "yeastType": "none", "yeast": 0, "piece": 1100,
+      "pf": [{ "type": "lmLiquid", "weight": 200, "hyd": 100, "yeast": 0 }],
+      "phases": [{ "name": "Puntata", "h": 4, "t": 26 }, { "name": "Appretto", "h": 3, "t": 28 }],
+      "tfi": 26, "tFlour": 22, "tPf": 24, "mixer": "4", "wFlour": "250", "start": "2026-11-24T06:00"
+    }
+  },
+  {
+    "name": "estremi",
+    "state": {
+      "flour": 1000, "water": 550, "salt": 40, "fat": 0, "yeastType": "fresh", "yeast": 30, "piece": 0, "pf": [],
+      "phases": [{ "name": "Veloce", "h": 1, "t": 20 }],
+      "tfi": 30, "tFlour": 5, "tPf": 18, "mixer": "1", "wFlour": "420", "start": "2026-11-25T23:30"
+    }
+  },
+  {
+    "name": "senza-sale-ne-acqua",
+    "state": {
+      "flour": 500, "water": 0, "salt": 0, "fat": 0, "yeastType": "fresh", "yeast": 0.2, "piece": 200, "pf": [],
+      "phases": [{ "name": "Frigo lungo", "h": 72, "t": 2 }, { "name": "Appretto", "h": 6, "t": 18 }],
+      "tfi": 23, "tFlour": 20, "tPf": 18, "mixer": "5", "wFlour": "150", "start": "2026-11-23T20:15"
+    }
+  }
+]
