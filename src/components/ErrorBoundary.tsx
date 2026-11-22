@@ -17,7 +17,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode; resetKey?: s
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("Errore in una scheda di Alveola", error, info.componentStack);
+    console.error("Errore in una scheda di Lievora", error, info.componentStack);
   }
 
   componentDidUpdate(prev: { resetKey?: string }) {

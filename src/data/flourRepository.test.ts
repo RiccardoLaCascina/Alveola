@@ -1,17 +1,17 @@
 import "fake-indexeddb/auto";
 import { afterEach, describe, expect, it } from "vitest";
-import { AlveolaDB } from "./db";
+import { LievoraDB } from "./db";
 import { createFlourRepository } from "./flourRepository";
 import { createFlour } from "@/domain/presets";
 
 let n = 0;
 const fresh = () => {
-  const db = new AlveolaDB(`test-${++n}`);
+  const db = new LievoraDB(`test-${++n}`);
   return { db, repo: createFlourRepository(db) };
 };
 
 describe("flourRepository", () => {
-  let current: AlveolaDB | null = null;
+  let current: LievoraDB | null = null;
   afterEach(async () => {
     await current?.delete();
     current = null;

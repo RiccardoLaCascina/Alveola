@@ -1,13 +1,13 @@
 import { FlourSchema, type Flour } from "@/domain/model";
 import { flourDisplayName } from "@/domain/presets";
-import { db as defaultDb, type AlveolaDB } from "./db";
+import { db as defaultDb, type LievoraDB } from "./db";
 
 /*
   Repository delle farine: l'unico punto che legge e scrive l'archivio.
   I componenti passano dagli hook (src/state/flours.ts), che passano da qui.
   Ogni farina viene validata con lo schema Zod prima di essere salvata.
 */
-export function createFlourRepository(db: AlveolaDB = defaultDb) {
+export function createFlourRepository(db: LievoraDB = defaultDb) {
   return {
     /** Tutte le farine, in ordine alfabetico per nome visualizzato. */
     async list(): Promise<Flour[]> {

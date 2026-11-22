@@ -25,7 +25,7 @@ export function Layout() {
           <div className="flex items-center gap-3">
             <BrandMark className="size-9" />
             <div className="leading-tight">
-              <h1 className="text-xl font-extrabold">Alveola</h1>
+              <h1 className="text-xl font-extrabold">Lievora</h1>
               <p className="text-xs text-muted-foreground first-letter:uppercase">{today}</p>
             </div>
           </div>

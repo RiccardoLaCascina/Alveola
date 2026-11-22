@@ -1,4 +1,6 @@
-# Alveola
+# Lievora
+
+> *Ogni impasto ha il suo tempo.*
 
 Il diario di laboratorio del pizzaiolo: ogni giorno registra la prova d'impasto, la confronta con le precedenti e aiuta a rendere l'impasto costante.
 Pensata per pizzerie, ristoranti, pizza al taglio e alla pala. Si usa dal telefono (PWA installabile, più avanti anche APK Android).
@@ -48,7 +50,7 @@ src/
 │  └─ ui/       componenti shadcn/ui (button, card, input, select, slider, dialog, ...)
 ├─ lib/         utilità (cn per unire classi Tailwind)
 ├─ app/         layout, barra delle schede, router, tema chiaro/scuro
-└─ styles/      tema Alveola (colori, font, variabili per chiaro e scuro)
+└─ styles/      tema Lievora (colori, font, variabili per chiaro e scuro)
 public/icons/   icone dell'app
 legacy/         la prima versione in un solo file (riferimento per il test di parità)
 scripts/        strumenti: cattura dei valori della prima versione, prova di fumo su telefono emulato
@@ -97,7 +99,8 @@ Il workflow `.github/workflows/deploy.yml` esegue test e build e pubblica `dist/
 Una volta sola, su GitHub: **Settings → Pages → Source: GitHub Actions**.
 Il repository deve essere pubblico (con l'account gratuito Pages non funziona sui privati).
 
-Indirizzo: `https://riccardolacascina.github.io/Alveola/`
+Indirizzo: `https://riccardolacascina.github.io/<nome-repository>/` (oggi il repository si chiama `Alveola`;
+se lo rinomini in `Lievora` da Settings → General, l'indirizzo diventa `.../Lievora/`).
 Sul telefono: **iPhone** Condividi → Aggiungi alla schermata Home; **Android** menu ⋮ → Installa app.
 
 ## Verifiche

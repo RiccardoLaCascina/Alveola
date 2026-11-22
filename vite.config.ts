@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 // base "./" = percorsi relativi: la stessa build funziona su GitHub Pages
-// (sotto /Alveola/) e dentro Capacitor (APK Android).
+// (sotto /<nome-repository>/) e dentro Capacitor (APK Android).
 export default defineConfig({
   base: "./",
   resolve: {
@@ -25,9 +25,9 @@ export default defineConfig({
         globIgnores: ["**/*-{cyrillic,cyrillic-ext,vietnamese,greek,greek-ext}-*.woff2"],
       },
       manifest: {
-        name: "Alveola",
-        short_name: "Alveola",
-        description: "Diario di laboratorio del pizzaiolo: impasti, maturazione e prove giornaliere.",
+        name: "Lievora — Ogni impasto ha il suo tempo",
+        short_name: "Lievora",
+        description: "Il diario di laboratorio del pizzaiolo: farine, impasti, maturazione e prove giornaliere.",
         lang: "it",
         start_url: "./",
         scope: "./",

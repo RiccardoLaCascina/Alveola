@@ -14,7 +14,19 @@ import { useFlourArchive } from "./flours";
   - Al caricamento i dati salvati passano da DoughSchema: se non sono validi si riparte dall'esempio.
 */
 
-export const DRAFT_STORAGE_KEY = "alveola-impasto-bozza";
+export const DRAFT_STORAGE_KEY = "lievora-impasto-bozza";
+/** Chiave usata quando l'app si chiamava Alveola: letta una volta, poi sostituita da quella nuova. */
+export const OLD_DRAFT_STORAGE_KEY = "alveola-impasto-bozza";
+
+/** localStorage che, se la chiave nuova manca, legge ancora quella vecchia; al primo salvataggio la vecchia sparisce. */
+const draftStorage = {
+  getItem: (key: string) => localStorage.getItem(key) ?? (key === DRAFT_STORAGE_KEY ? localStorage.getItem(OLD_DRAFT_STORAGE_KEY) : null),
+  setItem: (key: string, value: string) => {
+    localStorage.setItem(key, value);
+    if (key === DRAFT_STORAGE_KEY) localStorage.removeItem(OLD_DRAFT_STORAGE_KEY);
+  },
+  removeItem: (key: string) => localStorage.removeItem(key),
+};
 
 type ScalarKey = Exclude<keyof Dough, "preferments" | "phases">;
 
@@ -59,7 +71,7 @@ export const useDoughStore = create<DoughState>()(
     {
       name: DRAFT_STORAGE_KEY,
       version: 1,
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => draftStorage),
       partialize: (s) => ({ dough: s.dough }),
       merge: (persisted, current) => {
         const parsed = DoughSchema.safeParse((persisted as { dough?: unknown } | undefined)?.dough);
