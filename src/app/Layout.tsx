@@ -4,6 +4,7 @@ import { TabBar } from "./TabBar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { BrandMark } from "@/components/BrandMark";
 import { DoughSummary } from "./DoughSummary";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const dateFormat = new Intl.DateTimeFormat("it-IT", { weekday: "long", day: "numeric", month: "long" });
 
@@ -30,7 +31,7 @@ export function Layout() {
           </div>
           <ThemeToggle />
         </div>
-        {pathname !== "/diario" && <DoughSummary />}
+        {!["/diario", "/farine"].includes(pathname) && <DoughSummary />}
       </header>
 
       <main className="mx-auto max-w-xl px-4 pt-5 pb-[calc(7rem+env(safe-area-inset-bottom))]">
@@ -42,7 +43,7 @@ export function Layout() {
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
           >
-            {outlet}
+            <ErrorBoundary resetKey={pathname}>{outlet}</ErrorBoundary>
           </motion.div>
         </AnimatePresence>
       </main>

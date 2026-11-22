@@ -8,7 +8,8 @@ import { AddChips } from "@/components/AddChips";
 import { EmptyHint } from "@/components/EmptyHint";
 import { MIXER_TYPES } from "@/domain/model";
 import { MIXERS, PHASE_PRESETS } from "@/domain/presets";
-import { useDoughStore } from "@/state/doughStore";
+import { useDoughAnalysis, useDoughStore } from "@/state/doughStore";
+import { FlourStrength } from "./FlourStrength";
 import { PhaseRow } from "./PhaseRow";
 
 const MIXER_OPTIONS = MIXER_TYPES.map((m) => ({ value: m, label: MIXERS[m].label }));
@@ -17,6 +18,7 @@ export function TempiPage() {
   const dough = useDoughStore((s) => s.dough);
   const setField = useDoughStore((s) => s.setField);
   const addPhase = useDoughStore((s) => s.addPhase);
+  const analysis = useDoughAnalysis();
 
   return (
     <>
@@ -44,9 +46,13 @@ export function TempiPage() {
         </div>
       </Block>
 
-      <Block icon={CalendarClock} title="Farina e programma" hint="La forza (W) è sulla scheda tecnica del sacco.">
+      <Block icon={CalendarClock} title="Farina e programma" hint="La forza (W) viene dalla miscela, oppure scrivila a mano dalla scheda del sacco.">
         <div className="grid grid-cols-2 gap-3">
-          <NumberField label="Forza (W)" placeholder="es. 300" value={dough.flourW} onChange={(v) => setField("flourW", v)} />
+          <FlourStrength
+            w={analysis.flours.effectiveW}
+            manualW={dough.flourW}
+            onManualChange={(v) => setField("flourW", v)}
+          />
           <TextField label="Inizio impasto" type="datetime-local" value={dough.start} onChange={(v) => setField("start", v)} className="col-span-2" />
         </div>
       </Block>

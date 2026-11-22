@@ -5,6 +5,7 @@ import { DoughSchema, type Dough, type Phase, type Preferment, type PrefermentTy
 import { PREFERMENT_PRESETS, createDefaultDough, createPhase, createPreferment, nextQuarterHour } from "@/domain/presets";
 import { analyzeDough } from "@/domain/analisi";
 import { readLegacyDraft } from "@/data/legacyDraft";
+import { useFlourArchive } from "./flours";
 
 /*
   Stato dell'impasto in lavorazione (la "bozza" di oggi), condiviso da tutte le schede.
@@ -70,8 +71,9 @@ export const useDoughStore = create<DoughState>()(
   ),
 );
 
-/** Analisi dell'impasto corrente, ricalcolata solo quando l'impasto cambia. */
+/** Analisi dell'impasto corrente, ricalcolata solo quando cambiano l'impasto o l'archivio farine. */
 export function useDoughAnalysis() {
   const dough = useDoughStore((s) => s.dough);
-  return useMemo(() => analyzeDough(dough), [dough]);
+  const { flours, loaded } = useFlourArchive();
+  return useMemo(() => analyzeDough(dough, flours, { floursLoaded: loaded }), [dough, flours, loaded]);
 }

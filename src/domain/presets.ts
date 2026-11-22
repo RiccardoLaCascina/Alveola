@@ -1,4 +1,15 @@
-import type { Dough, MixerType, Phase, Preferment, PrefermentType } from "./model";
+import type { Dough, Flour, FlourType, MixerType, Phase, Preferment, PrefermentType } from "./model";
+
+export const FLOUR_TYPE_LABEL: Record<FlourType, string> = {
+  "00": "Tipo 00",
+  "0": "Tipo 0",
+  "1": "Tipo 1",
+  "2": "Tipo 2",
+  integrale: "Integrale",
+  semola: "Semola",
+  manitoba: "Manitoba",
+  altro: "Altro",
+};
 
 type PrefermentPreset = {
   label: string;
@@ -53,7 +64,18 @@ export function isSourdough(type: PrefermentType): boolean {
 
 export function createPreferment(type: PrefermentType): Preferment {
   const p = PREFERMENT_PRESETS[type];
-  return { id: newId(), type, weight: p.weight, hydration: p.hydration, yeast: p.yeast };
+  return { id: newId(), type, weight: p.weight, hydration: p.hydration, yeast: p.yeast, flourBlend: [] };
+}
+
+/** Nuova farina vuota per il modulo di inserimento. */
+export function createFlour(now: number = Date.now()): Flour {
+  return { id: newId(), name: "", mill: "", type: "0", w: null, pl: null, protein: null, absorption: null, notes: "", createdAt: now, updatedAt: now };
+}
+
+/** Nome leggibile di una farina: prima il nome (la parte che distingue), poi il molino. */
+export function flourDisplayName(f: Pick<Flour, "name" | "mill">): string {
+  const name = f.name.trim() || "Farina senza nome";
+  return f.mill.trim() ? `${name} · ${f.mill.trim()}` : name;
 }
 
 export function createPhase(name: string, hours: number, temp: number): Phase {
@@ -73,6 +95,7 @@ export function nextQuarterHour(now: Date = new Date()): string {
 export function createDefaultDough(now: Date = new Date()): Dough {
   return {
     flour: 1000,
+    flourBlend: [],
     water: 650,
     salt: 28,
     fat: 0,

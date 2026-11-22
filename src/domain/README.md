@@ -11,6 +11,7 @@ Una funzione qui riceve dati e restituisce un risultato, sempre lo stesso a pari
 | `lievito.ts` | attività del lievito con la temperatura, ore equivalenti a 24 °C, dose consigliata |
 | `temperature.ts` | temperatura dell'acqua (bilancio termico) |
 | `farina.ts` | forza (W) consigliata e confronto con la farina usata |
+| `miscela.ts` | miscele di farine: grammi di ogni farina tra vasca e prefermenti, profilo pesato (W, P/L, proteine, assorbimento), W effettiva, avvisi |
 | `programma.ts` | programma orario delle fasi |
 | `analisi.ts` | `analyzeDough()`: mette insieme tutto, è quello che usano le schede |
 | `format.ts` | numeri in formato italiano |

@@ -6,6 +6,7 @@ import { ImpastoPage } from "@/features/impasto/ImpastoPage";
 import { TempiPage } from "@/features/tempi/TempiPage";
 import { RisultatiPage } from "@/features/risultati/RisultatiPage";
 import { DiarioPage } from "@/features/diario/DiarioPage";
+import { FarinePage } from "@/features/farine/FarinePage";
 
 // HashRouter (indirizzi tipo .../#/tempi): funziona su GitHub Pages e in Capacitor
 // senza configurare il server, perché il percorso dopo # non arriva mai al server.
@@ -22,6 +23,7 @@ export function App() {
             <Route path="impasto" element={<ImpastoPage />} />
             <Route path="tempi" element={<TempiPage />} />
             <Route path="risultati" element={<RisultatiPage />} />
+            <Route path="farine" element={<FarinePage />} />
             <Route path="diario" element={<DiarioPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/impasto" replace />} />

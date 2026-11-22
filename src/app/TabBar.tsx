@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
 import { motion } from "motion/react";
-import { ChartColumn, NotebookPen, Timer, Wheat, type LucideIcon } from "lucide-react";
+import { Archive, ChartColumn, NotebookPen, Timer, Wheat, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Tab = { to: string; label: string; icon: LucideIcon };
@@ -9,6 +9,7 @@ const TABS: Tab[] = [
   { to: "/impasto", label: "Impasto", icon: Wheat },
   { to: "/tempi", label: "Tempi", icon: Timer },
   { to: "/risultati", label: "Risultati", icon: ChartColumn },
+  { to: "/farine", label: "Farine", icon: Archive },
   { to: "/diario", label: "Diario", icon: NotebookPen },
 ];
 
@@ -27,7 +28,7 @@ export function TabBar() {
             to={to}
             className={({ isActive }) =>
               cn(
-                "relative flex flex-1 flex-col items-center gap-0.5 rounded-full px-2 py-2 text-[0.7rem] font-medium transition-colors",
+                "relative flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-full px-1 py-2 text-[0.68rem] font-medium transition-colors",
                 isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground",
               )
             }

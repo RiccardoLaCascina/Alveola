@@ -1,4 +1,5 @@
-import { FlaskConical, Wheat } from "lucide-react";
+import { FlaskConical, Layers, Wheat } from "lucide-react";
+import { BlendEditor } from "./BlendEditor";
 import { Block } from "@/components/Block";
 import { PageTitle } from "@/components/PageTitle";
 import { NumberField } from "@/components/form/NumberField";
@@ -46,6 +47,15 @@ export function ImpastoPage() {
             onChange={(v) => setField("yeast", v)}
           />
         </div>
+      </Block>
+
+      <Block icon={Layers} title="Miscela di farine" hint="Le farine della vasca e la loro quota. I dati tecnici vengono dall’archivio Farine.">
+        <BlendEditor
+          parts={dough.flourBlend}
+          onChange={(parts) => setField("flourBlend", parts)}
+          context="dell’impasto"
+          emptyText="Nessuna farina scelta: aggiungi quelle che usi per avere W, P/L, proteine e assorbimento della miscela."
+        />
       </Block>
 
       <Block icon={FlaskConical} title="Prefermenti" hint="Farina e acqua contenute nei prefermenti entrano nel calcolo dell’idratazione totale.">

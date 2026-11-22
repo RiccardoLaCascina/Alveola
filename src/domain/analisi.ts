@@ -1,4 +1,5 @@
-import type { Dough, Flag } from "./model";
+import type { Dough, Flag, Flour } from "./model";
+import { blendFlags, blendProfile, flourDistribution, resolveEffectiveW } from "./miscela";
 import { MIXERS } from "./presets";
 import { fmt, percent } from "./format";
 import { DRY_TO_FRESH, bakersTable, compositionFlags, computeComposition, grams, hydrationNote, portion } from "./impasto";
@@ -9,9 +10,10 @@ import { buildSchedule } from "./programma";
 
 /**
  * Analisi completa di un impasto: mette insieme tutti i calcoli del dominio.
- * È una funzione pura: stesso impasto → stesso risultato. Le schede la usano per mostrare i numeri.
+ * È una funzione pura: stesso impasto (e stesso archivio farine) → stesso risultato.
+ * `flours` è l'archivio delle farine, per risolvere le miscele.
  */
-export function analyzeDough(d: Dough) {
+export function analyzeDough(d: Dough, flours: Flour[] = [], { floursLoaded = true }: { floursLoaded?: boolean } = {}) {
   const composition = computeComposition(d);
   const maturation = maturationSummary(d.phases);
   const c = composition;
@@ -65,10 +67,18 @@ export function analyzeDough(d: Dough) {
       });
   }
 
-  // --- forza della farina
+  // --- farine: distribuzione della miscela e profilo
+  // Finché l'archivio non è caricato non sappiamo niente delle farine: niente avvisi né W della miscela.
+  const usesArchive = d.flourBlend.length > 0 || d.preferments.some((p) => p.flourBlend.length > 0);
+  const loading = !floursLoaded && usesArchive;
+  const distribution = flourDistribution(d, c, flours);
+  const profile = blendProfile(distribution);
+  const flourFlags = loading ? [] : blendFlags(d, distribution, profile, c.hydration);
+
+  // --- forza della farina: W della miscela se copre tutta la farina, altrimenti integrata con quella scritta a mano
   const w = recommendedW(maturation.totalHours, c.hydration);
-  const flourW = grams(d.flourW);
-  if (w && flourW) maturationFlags.push(flourStrengthFlag(flourW, w, maturation.totalHours));
+  const effectiveW = resolveEffectiveW(profile.w, grams(d.flourW), { loading });
+  if (w && effectiveW.value) maturationFlags.push(flourStrengthFlag(Math.round(effectiveW.value), w, maturation.totalHours));
 
   return {
     composition,
@@ -80,6 +90,7 @@ export function analyzeDough(d: Dough) {
     yeast,
     waterTemp,
     recommendedW: w,
+    flours: { distribution, profile, flags: flourFlags, effectiveW, loading },
     maturationFlags,
     schedule: buildSchedule(d.start, maturation.phases),
   };

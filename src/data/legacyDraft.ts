@@ -26,6 +26,7 @@ export function convertLegacyDraft(raw: unknown): Dough | null {
   const s = raw as Record<string, unknown>;
   const candidate: Dough = {
     flour: toNum(s.flour),
+    flourBlend: [],
     water: toNum(s.water),
     salt: toNum(s.salt),
     fat: toNum(s.fat),
@@ -38,6 +39,7 @@ export function convertLegacyDraft(raw: unknown): Dough | null {
       weight: toNum(p.weight),
       hydration: toNum(p.hyd),
       yeast: toNum(p.yeast),
+      flourBlend: [],
     })),
     phases: (Array.isArray(s.phases) ? (s.phases as LegacyPhase[]) : []).map((p) => ({
       id: newId(),

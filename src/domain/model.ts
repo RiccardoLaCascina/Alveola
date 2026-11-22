@@ -14,7 +14,35 @@ export const YEAST_TYPES = ["fresh", "dry", "none"] as const;
 export const PREFERMENT_TYPES = ["biga", "poolish", "lmSolid", "lmLiquid", "custom"] as const;
 export const MIXER_TYPES = ["hand", "fork", "diving", "planetary", "spiral"] as const;
 
+export const FLOUR_TYPES = ["00", "0", "1", "2", "integrale", "semola", "manitoba", "altro"] as const;
+
 const value = z.number().nullable();
+
+/** Una farina dell'archivio, con i dati della scheda tecnica. */
+export const FlourSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  /** molino / marca */
+  mill: z.string(),
+  type: z.enum(FLOUR_TYPES),
+  /** forza (alveografo) */
+  w: value,
+  /** rapporto tenacità / estensibilità (alveografo) */
+  pl: value,
+  /** proteine, % */
+  protein: value,
+  /** assorbimento d'acqua (farinografo), % */
+  absorption: value,
+  notes: z.string(),
+  createdAt: z.number(),
+  updatedAt: z.number(),
+});
+
+/** Quota di una farina in una miscela, in % (le quote di una miscela dovrebbero sommare a 100). */
+export const BlendPartSchema = z.object({
+  flourId: z.string(),
+  percent: value,
+});
 
 export const PrefermentSchema = z.object({
   id: z.string(),
@@ -25,6 +53,8 @@ export const PrefermentSchema = z.object({
   hydration: value,
   /** lievito fresco usato nel prefermento, g (ignorato per il lievito madre) */
   yeast: value,
+  /** miscela di farine del prefermento; vuota = stessa miscela dell'impasto */
+  flourBlend: z.array(BlendPartSchema).default([]),
 });
 
 export const PhaseSchema = z.object({
@@ -39,6 +69,8 @@ export const PhaseSchema = z.object({
 export const DoughSchema = z.object({
   /** ingredienti aggiunti in vasca, esclusi i prefermenti, g */
   flour: value,
+  /** miscela delle farine aggiunte in vasca (in % sulla farina in vasca) */
+  flourBlend: z.array(BlendPartSchema).default([]),
   water: value,
   salt: value,
   fat: value,
@@ -53,7 +85,7 @@ export const DoughSchema = z.object({
   flourTemp: value,
   prefermentTemp: value,
   mixer: z.enum(MIXER_TYPES),
-  /** forza della farina (W) */
+  /** forza della farina (W) scritta a mano: usata solo se la miscela non ha farine con W */
   flourW: value,
   /** inizio impasto, "YYYY-MM-DDTHH:mm" (ora locale) oppure "" */
   start: z.string(),
@@ -62,6 +94,9 @@ export const DoughSchema = z.object({
 export type YeastType = (typeof YEAST_TYPES)[number];
 export type PrefermentType = (typeof PREFERMENT_TYPES)[number];
 export type MixerType = (typeof MIXER_TYPES)[number];
+export type FlourType = (typeof FLOUR_TYPES)[number];
+export type Flour = z.infer<typeof FlourSchema>;
+export type BlendPart = z.infer<typeof BlendPartSchema>;
 export type Preferment = z.infer<typeof PrefermentSchema>;
 export type Phase = z.infer<typeof PhaseSchema>;
 export type Dough = z.infer<typeof DoughSchema>;

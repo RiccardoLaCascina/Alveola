@@ -8,8 +8,14 @@ Pensata per pizzerie, ristoranti, pizza al taglio e alla pala. Si usa dal telefo
 - **Impasto**: farina, acqua, sale, grassi, lievito, prefermenti (biga, poolish, lievito madre).
 - **Tempi**: fasi di maturazione con durata e temperatura, temperature di impastamento, forza della farina (W).
 - **Risultati**: idratazione, percentuali del panettiere, lievito consigliato, temperatura dell'acqua, programma orario.
+- **Farine**: archivio delle farine (nome, molino, tipo, W, P/L, proteine, assorbimento, note) e miscele in percentuale,
+  sia per l'impasto in vasca sia per ogni prefermento. In Risultati: W, P/L, proteine e assorbimento della miscela
+  (media pesata sui grammi), ripartizione tra vasca e prefermenti, avvisi (quote, dati mancanti, acqua rispetto all'assorbimento).
+  La W della miscela sostituisce quella scritta a mano solo se copre tutta la farina; altrimenti le due si combinano.
 - **Diario**: ogni prova con temperature misurate (acqua, impasto finale, ambiente), esito da 1 a 5 su più voci e commento.
-- **In arrivo**: storico e confronto tra prove, consigli giornalieri da un'AI.
+- **In arrivo**: diario delle prove; pianificazione all'indietro (a che ora impastare e fare lo staglio per arrivare
+  all'orario voluto, con temperatura e umidità dell'ambiente); AI con la chiave del pizzaiolo, che interroga tutti i dati
+  e cresce con lui (memoria locale delle prove e delle correzioni).
 
 ## Tecnologie
 
