@@ -1,73 +1,84 @@
 # Alveola
 
-App per telefono (PWA) per gestire impasti, prefermenti, maturazione e lievitazione.
+Il diario di laboratorio del pizzaiolo: ogni giorno registra la prova d'impasto, la confronta con le precedenti e aiuta a rendere l'impasto costante.
+Pensata per pizzerie, ristoranti, pizza al taglio e alla pala. Si usa dal telefono (PWA installabile, più avanti anche APK Android).
 
-## Cosa fa
+## Cosa fa (e farà)
 
-- **Impasto**: farina, acqua, sale, grassi, lievito di birra fresco o secco, prefermenti (biga, poolish, lievito madre solido e liquido).
-- **Tempi**: fasi di maturazione con durata e temperatura, temperature di impastamento, forza della farina (W), ora di inizio.
-- **Risultati**: idratazione totale, percentuali del panettiere, porzionatura, lievito consigliato, temperatura dell'acqua, W consigliata e programma orario.
+- **Impasto**: farina, acqua, sale, grassi, lievito, prefermenti (biga, poolish, lievito madre).
+- **Tempi**: fasi di maturazione con durata e temperatura, temperature di impastamento, forza della farina (W).
+- **Risultati**: idratazione, percentuali del panettiere, lievito consigliato, temperatura dell'acqua, programma orario.
+- **Diario**: ogni prova con temperature misurate (acqua, impasto finale, ambiente), esito da 1 a 5 su più voci e commento.
+- **In arrivo**: storico e confronto tra prove, consigli giornalieri da un'AI.
 
-I dati restano salvati sul telefono (localStorage). Dopo la prima apertura l'app funziona anche offline.
+## Tecnologie
 
-## Tecnologia
-
-HTML, CSS e JavaScript puri, senza framework né librerie. Il manifest e il service worker la rendono una PWA, cioè un sito che il telefono può installare come un'app.
+| | |
+|---|---|
+| Linguaggio | TypeScript |
+| Interfaccia | React |
+| Build e server di sviluppo | Vite |
+| App installabile / offline | vite-plugin-pwa |
+| Navigazione | React Router (HashRouter) |
+| Dati sul telefono | IndexedDB con Dexie |
+| Validazione dati | Zod |
+| Test | Vitest |
 
 ## Struttura
 
 ```
-index.html             interfaccia e logica dell'app
-manifest.webmanifest   nome, icone e colori per l'installazione
-sw.js                  service worker per l'uso offline
-icons/                 icone dell'app
+src/
+├─ domain/      tipi e calcoli puri (niente React): impasto, lievito, temperature, prova
+├─ data/        database (Dexie) e repository
+├─ features/    una cartella per scheda: impasto, tempi, risultati, diario
+├─ components/  pezzi di interfaccia condivisi
+├─ app/         layout, barra delle schede, router
+└─ styles/      CSS globale
+public/icons/   icone dell'app
+legacy/         la prima versione in un solo file, da cui portare i calcoli
 ```
+
+Percorso di ogni funzione: **componente → hook → dominio → repository → database**.
+
+## Comandi
+
+Una volta sola, dopo aver clonato:
+
+```
+npm install
+```
+
+Poi:
+
+| Comando | Cosa fa |
+|---|---|
+| `npm run dev` | avvia l'app su http://localhost:5173 con ricarica automatica |
+| `npm test` | esegue i test una volta |
+| `npm run test:watch` | riesegue i test a ogni modifica |
+| `npm run typecheck` | controlla i tipi TypeScript |
+| `npm run build` | crea la versione da pubblicare in `dist/` |
+| `npm run preview` | prova in locale la versione di `dist/` |
+
+Nel browser, con F12 e poi Ctrl+Shift+M, puoi simulare lo schermo di un telefono.
 
 ## Rami
 
-- `development`: qui si lavora.
-- `main`: versione stabile, pubblicata con GitHub Pages.
+- `development`: qui si integra il lavoro.
+- `feature/...`: un ramo per ogni funzione, poi unito su `development`.
+- `main`: versione stabile; ogni push su `main` la pubblica.
 
-Quando una modifica su `development` funziona, si porta su `main` (merge o pull request).
+## Pubblicazione su GitHub Pages
 
-## Provarla sul computer
+Il workflow `.github/workflows/deploy.yml` esegue test e build e pubblica `dist/` a ogni push su `main`.
 
-Dalla cartella del progetto:
+Una volta sola, su GitHub: **Settings → Pages → Source: GitHub Actions**.
+Il repository deve essere pubblico (con l'account gratuito Pages non funziona sui privati).
 
-```
-python -m http.server 8000
-```
+Indirizzo: `https://riccardolacascina.github.io/Alveola/`
+Sul telefono: **iPhone** Condividi → Aggiungi alla schermata Home; **Android** menu ⋮ → Installa app.
 
-poi apri http://localhost:8000. Nel browser, con gli strumenti per sviluppatori (F12), puoi simulare lo schermo di un telefono.
+## Modelli di calcolo (dalla prima versione)
 
-## Provarla sul telefono
-
-1. Il repository deve essere pubblico (con l'account gratuito GitHub Pages non funziona sui privati).
-2. Attiva GitHub Pages: Settings → Pages → branch `main`, cartella `/ (root)`, Save.
-3. Dopo un paio di minuti apri `https://riccardolacascina.github.io/Alveola/` sul telefono.
-4. **iPhone (Safari)**: Condividi → Aggiungi alla schermata Home.
-   **Android (Chrome)**: menu ⋮ → Installa app.
-
-## Pubblicare una nuova versione
-
-1. Modifica i file su `development` e provali in locale.
-2. In `sw.js` aumenta `VERSION` (es. da `v1` a `v2`), così i telefoni scaricano la versione nuova.
-3. Commit e push:
-   ```
-   git add .
-   git commit -m "descrizione"
-   git push
-   ```
-4. Porta le modifiche su `main` per pubblicarle.
-
-## Modelli di calcolo
-
-- **Lievito**: ogni fase è convertita in ore equivalenti a 24 °C (l'attività del lievito raddoppia circa ogni 7 °C); la dose di lievito fresco segue una curva empirica `3,87 × ore^-1,37` %. È un punto di partenza da tarare con le prove.
+- **Lievito**: ogni fase è convertita in ore equivalenti a 24 °C (l'attività del lievito raddoppia circa ogni 7 °C); dose di lievito fresco `3,87 × ore^-1,37` %. Punto di partenza da tarare con le prove.
 - **Temperatura dell'acqua**: bilancio termico tra farina (calore specifico ≈ 0,4 dell'acqua), acqua e prefermenti, più il riscaldamento dell'impastatrice.
 - **Forza della farina**: fasce indicative di W in base alla durata totale.
-
-## Prossimi passi
-
-- Diario delle prove: registrare ogni impasto e com'è andato, per tarare le stime sui propri risultati.
-- Effetto di sale, zuccheri e grassi sulla velocità di lievitazione.
-- App Android (APK) con Capacitor.

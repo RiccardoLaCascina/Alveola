@@ -1,0 +1,79 @@
+/* Colori e stile ripresi dall'app originale (legacy/index.html). */
+:root {
+  --bg: #E9ECE6; --surface: #F8FAF5; --ink: #1E2722; --muted: #58635C; --line: #C9D0C6;
+  --flour: #D6C392; --water: #4F7F97; --pf: #9A6A3E; --other: #8E9A91; --warn: #9A4A1C;
+  --cold: #5D8DAF; --mild: #9AA77A; --warm: #D39A2B;
+  --field: #FFFFFF; --bar: #1E2722; --onbar: #E9ECE6;
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-title: "Bricolage Grotesque", "Atkinson Hyperlegible", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131815; --surface: #1C231E; --ink: #E4E8E1; --muted: #9BA79E; --line: #313B34;
+    --flour: #9C8A5C; --water: #78A9C1; --pf: #C0905F; --other: #66736A; --warn: #E08A5A;
+    --cold: #4F7FA0; --mild: #7E8B5E; --warm: #C08A22;
+    --field: #141A16; --bar: #0E1210; --onbar: #E4E8E1;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131815; --surface: #1C231E; --ink: #E4E8E1; --muted: #9BA79E; --line: #313B34;
+  --flour: #9C8A5C; --water: #78A9C1; --pf: #C0905F; --other: #66736A; --warn: #E08A5A;
+  --cold: #4F7FA0; --mild: #7E8B5E; --warm: #C08A22;
+  --field: #141A16; --bar: #0E1210; --onbar: #E4E8E1;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.5;
+  -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none;
+}
+h1, h2, h3 { font-family: var(--font-title); margin: 0; letter-spacing: -.01em; }
+[hidden] { display: none !important; }
+button:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--water); outline-offset: 2px; }
+
+/* intestazione */
+.top {
+  position: sticky; top: 0; z-index: 30; background: var(--bar); color: var(--onbar);
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 12px;
+}
+.top-row { display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto; }
+.top h1 { font-size: 1.3rem; font-weight: 800; }
+
+main { max-width: 600px; margin: 0 auto; padding: 18px 14px calc(96px + env(safe-area-inset-bottom, 0px)); }
+
+/* riquadri */
+section.block { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 16px; }
+section.block h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+.hint { color: var(--muted); font-size: .92rem; margin: 0 0 16px; }
+.empty { color: var(--muted); font-size: .95rem; padding: 14px; border: 1px dashed var(--line); border-radius: 10px; text-align: center; margin: 0; }
+
+/* campi */
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+label.f { display: flex; flex-direction: column; gap: 6px; font-size: .9rem; color: var(--muted); }
+.inp { display: flex; align-items: center; background: var(--field); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-height: 48px; }
+.inp:focus-within { border-color: var(--ink); outline: 2px solid color-mix(in srgb, var(--water) 40%, transparent); outline-offset: 1px; }
+.inp input, .inp select {
+  flex: 1; min-width: 0; width: 100%; border: 0; background: transparent; color: var(--ink);
+  font: inherit; font-size: 1.1rem; padding: 10px 12px; font-variant-numeric: tabular-nums;
+}
+.inp input:focus, .inp select:focus { outline: none; }
+.inp input:disabled { opacity: .45; }
+.inp span { padding: 0 12px 0 4px; color: var(--muted); font-size: .9rem; }
+
+/* barra delle schede */
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; display: flex; justify-content: center;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+.tabs a {
+  flex: 1; max-width: 200px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  color: var(--muted); text-decoration: none; font-size: .78rem; padding: 6px 4px; border-radius: 10px;
+}
+.tabs svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tabs a[aria-current="page"] { color: var(--ink); font-weight: 700; background: color-mix(in srgb, var(--flour) 35%, transparent); }
