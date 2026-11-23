@@ -1,5 +1,6 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { Flour } from "@/domain/model";
+import type { Trial } from "@/domain/prova";
 
 /*
   Database del telefono (IndexedDB, tramite Dexie).
@@ -12,12 +13,18 @@ export const OLD_DB_NAME = "alveola";
 
 export class LievoraDB extends Dexie {
   flours!: EntityTable<Flour, "id">;
+  trials!: EntityTable<Trial, "id">;
 
   constructor(name = DB_NAME) {
     super(name);
     this.version(1).stores({
       // chiave primaria "id"; indici per ordinare e cercare
       flours: "id, name, mill, type, updatedAt",
+    });
+    // v2: diario delle prove
+    this.version(2).stores({
+      flours: "id, name, mill, type, updatedAt",
+      trials: "id, createdAt, status, updatedAt",
     });
   }
 }

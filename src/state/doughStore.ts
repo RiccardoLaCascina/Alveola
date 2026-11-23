@@ -1,8 +1,16 @@
 import { useMemo } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { DoughSchema, type Dough, type Phase, type Preferment, type PrefermentType } from "@/domain/model";
-import { PREFERMENT_PRESETS, createDefaultDough, createPhase, createPreferment, nextQuarterHour } from "@/domain/presets";
+import { DoughSchema, type Dough, type Phase, type Plan, type Preferment, type PrefermentType } from "@/domain/model";
+import {
+  PHASE_PRESETS,
+  PREFERMENT_PRESETS,
+  createDefaultDough,
+  createPhaseFromPreset,
+  createPreferment,
+  nextQuarterHour,
+} from "@/domain/presets";
+import { DRAFT_VERSION, migrateDraft } from "@/data/draftMigration";
 import { analyzeDough } from "@/domain/analisi";
 import { readLegacyDraft } from "@/data/legacyDraft";
 import { useFlourArchive } from "./flours";
@@ -28,7 +36,7 @@ const draftStorage = {
   removeItem: (key: string) => localStorage.removeItem(key),
 };
 
-type ScalarKey = Exclude<keyof Dough, "preferments" | "phases">;
+type ScalarKey = Exclude<keyof Dough, "preferments" | "phases" | "plan">;
 
 type DoughState = {
   dough: Dough;
@@ -38,10 +46,13 @@ type DoughState = {
   /** Cambiando tipo, idratazione e lievito tornano ai valori tipici del nuovo prefermento. */
   changePrefermentType: (id: string, type: PrefermentType) => void;
   removePreferment: (id: string) => void;
-  addPhase: (name: string, hours: number, temp: number) => void;
+  addPhase: (preset: (typeof PHASE_PRESETS)[number]) => void;
+  setPlan: (patch: Partial<Plan>) => void;
   updatePhase: (id: string, patch: Partial<Omit<Phase, "id">>) => void;
   removePhase: (id: string) => void;
   reset: () => void;
+  /** Sostituisce la bozza con un impasto (es. quello di una prova riuscita), con ora di inizio da adesso. */
+  loadDough: (d: Dough) => void;
 };
 
 const initialDough = (): Dough => readLegacyDraft() ?? createDefaultDough();
@@ -62,15 +73,26 @@ export const useDoughStore = create<DoughState>()(
             ),
           })),
         removePreferment: (id) => patch((d) => ({ preferments: d.preferments.filter((x) => x.id !== id) })),
-        addPhase: (name, hours, temp) => patch((d) => ({ phases: [...d.phases, createPhase(name, hours, temp)] })),
+        addPhase: (preset) => patch((d) => ({ phases: [...d.phases, createPhaseFromPreset(preset)] })),
+        setPlan: (p) => patch((d) => ({ plan: { ...d.plan, ...p } })),
         updatePhase: (id, p) => patch((d) => ({ phases: d.phases.map((x) => (x.id === id ? { ...x, ...p } : x)) })),
         removePhase: (id) => patch((d) => ({ phases: d.phases.filter((x) => x.id !== id) })),
         reset: () => set({ dough: createDefaultDough() }),
+        loadDough: (d) =>
+          set({
+            dough: DoughSchema.parse({
+              ...structuredClone(d),
+              start: nextQuarterHour(),
+              plan: { ...d.plan, targetReady: "" },
+            }),
+          }),
       };
     },
     {
       name: DRAFT_STORAGE_KEY,
-      version: 1,
+      // le bozze salvate da versioni precedenti vengono aggiornate (vedi data/draftMigration.ts)
+      version: DRAFT_VERSION,
+      migrate: (persisted, fromVersion) => migrateDraft(persisted, fromVersion) as never,
       storage: createJSONStorage(() => draftStorage),
       partialize: (s) => ({ dough: s.dough }),
       merge: (persisted, current) => {

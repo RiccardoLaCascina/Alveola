@@ -1,4 +1,4 @@
-import type { Phase } from "./model";
+import type { AdaptMode, Phase } from "./model";
 import { grams } from "./impasto";
 
 /** Temperatura di riferimento del modello, °C. */
@@ -23,7 +23,27 @@ export function suggestedFreshYeastPercent(equivalentHours: number): number {
   return Math.min(4, Math.max(0.02, 3.87 * Math.pow(equivalentHours, -1.37)));
 }
 
-export type NormalizedPhase = { id: string; name: string; hours: number; temp: number };
+export type NormalizedPhase = {
+  id: string;
+  name: string;
+  /** durata effettiva (eventualmente adattata alla temperatura di oggi), ore */
+  hours: number;
+  /** temperatura effettiva, °C */
+  temp: number;
+  /** durata e temperatura scritte nella ricetta */
+  plannedHours: number;
+  plannedTemp: number;
+  ambient: boolean;
+  balled: boolean;
+  /** true se durata o temperatura sono state cambiate per l'ambiente di oggi */
+  adapted: boolean;
+};
+
+export type MaturationContext = {
+  /** temperatura del laboratorio oggi; null = usa le temperature previste */
+  ambientTemp?: number | null;
+  adapt?: AdaptMode;
+};
 
 export type MaturationSummary = {
   phases: NormalizedPhase[];
@@ -33,13 +53,37 @@ export type MaturationSummary = {
   equivalentHours: number;
 };
 
-/** Campi vuoti: durata 0, temperatura 20 °C, nome "Fase". */
-export function normalizePhase(p: Phase): NormalizedPhase {
-  return { id: p.id, name: p.name.trim() || "Fase", hours: grams(p.hours), temp: p.temp ?? 20 };
+/**
+ * Normalizza una fase (campi vuoti: durata 0, temperatura 20 °C, nome "Fase") e,
+ * se è una fase ambiente e conosciamo la temperatura di oggi, la adatta:
+ * - adapt "yeast": stessa durata, temperatura di oggi (cambierà la dose di lievito consigliata);
+ * - adapt "times": durata scalata perché la fase "valga" lo stesso: h' = h × attività(prevista) / attività(oggi).
+ */
+export function normalizePhase(p: Phase, ctx: MaturationContext = {}): NormalizedPhase {
+  const plannedHours = grams(p.hours);
+  const plannedTemp = p.temp ?? 20;
+  const base: NormalizedPhase = {
+    id: p.id,
+    name: p.name.trim() || "Fase",
+    hours: plannedHours,
+    temp: plannedTemp,
+    plannedHours,
+    plannedTemp,
+    ambient: p.ambient,
+    balled: p.balled,
+    adapted: false,
+  };
+  const today = ctx.ambientTemp;
+  if (!p.ambient || today == null || !Number.isFinite(today) || today === plannedTemp) return base;
+  if (ctx.adapt === "times") {
+    const hours = (plannedHours * yeastActivity(plannedTemp)) / yeastActivity(today);
+    return { ...base, hours, temp: today, adapted: true };
+  }
+  return { ...base, temp: today, adapted: true };
 }
 
-export function maturationSummary(phases: Phase[]): MaturationSummary {
-  const normalized = phases.map(normalizePhase);
+export function maturationSummary(phases: Phase[], ctx: MaturationContext = {}): MaturationSummary {
+  const normalized = phases.map((p) => normalizePhase(p, ctx));
   let totalHours = 0;
   let coldHours = 0;
   let equivalentHours = 0;

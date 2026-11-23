@@ -42,7 +42,7 @@ export function FlourCard() {
             <div className="mt-4 grid grid-cols-2 gap-3">
               <ProfileStat label="Forza (W)" v={profile.w} format={(n) => fmt(n, 0)} />
               <ProfileStat label="P/L" v={profile.pl} format={(n) => fmt(n, 2)} note={profile.pl ? plNote(profile.pl.value) : undefined} />
-              <ProfileStat label="Proteine" v={profile.protein} format={(n) => `${fmt(n, 1)} %`} />
+              <ProfileStat label="Proteine" v={profile.protein} format={(n) => `${fmt(n, 1)} %`} note="tal quale" />
               <ProfileStat label="Assorbimento" v={profile.absorption} format={(n) => `${fmt(n, 0)} %`} />
             </div>
 

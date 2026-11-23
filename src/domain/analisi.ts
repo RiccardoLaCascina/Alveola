@@ -6,7 +6,7 @@ import { DRY_TO_FRESH, bakersTable, compositionFlags, computeComposition, grams,
 import { MIN_RELIABLE_EQUIVALENT_HOURS, maturationSummary, suggestedFreshYeastPercent } from "./lievito";
 import { waterTemperature } from "./temperature";
 import { flourStrengthFlag, recommendedW } from "./farina";
-import { buildSchedule } from "./programma";
+import { buildPlan, planningFlags } from "./programma";
 
 /**
  * Analisi completa di un impasto: mette insieme tutti i calcoli del dominio.
@@ -15,7 +15,8 @@ import { buildSchedule } from "./programma";
  */
 export function analyzeDough(d: Dough, flours: Flour[] = [], { floursLoaded = true }: { floursLoaded?: boolean } = {}) {
   const composition = computeComposition(d);
-  const maturation = maturationSummary(d.phases);
+  // Le fasi ambiente usano la temperatura del laboratorio di oggi (se c'è), adattando lievito o tempi.
+  const maturation = maturationSummary(d.phases, { ambientTemp: d.ambientTemp, adapt: d.plan.adapt });
   const c = composition;
 
   // --- lievito consigliato
@@ -92,7 +93,8 @@ export function analyzeDough(d: Dough, flours: Flour[] = [], { floursLoaded = tr
     recommendedW: w,
     flours: { distribution, profile, flags: flourFlags, effectiveW, loading },
     maturationFlags,
-    schedule: buildSchedule(d.start, maturation.phases),
+    schedule: buildPlan(d.plan, d.start, maturation.phases),
+    planningFlags: planningFlags(maturation.phases, d.ambientTemp, d.ambientHumidity, d.plan.adapt),
   };
 }
 

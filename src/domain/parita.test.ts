@@ -55,7 +55,10 @@ function render(d: Dough) {
     wNote: a.recommendedW ? a.recommendedW.label + (a.recommendedW.raisedForHydration ? ", alzata per l’alta idratazione" : "") : "",
     maturationFlags: a.maturationFlags,
     schedule: a.schedule
-      ? a.schedule.map((s) => [s.kind === "phase" ? `${s.label} (${fmt(s.hours, 1)} h)` : s.label, formatScheduleTime(s.at)])
+      ? a.schedule.steps
+          // lo staglio è una novità di Lievora: la prima versione non lo mostrava
+          .filter((s) => s.kind !== "balling")
+          .map((s) => [s.kind === "phase" ? `${s.label} (${fmt(s.hours, 1)} h)` : s.label, formatScheduleTime(s.at)])
       : [["Imposta l’ora di inizio e le fasi.", ""]],
   };
 }

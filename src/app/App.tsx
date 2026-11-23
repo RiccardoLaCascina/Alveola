@@ -1,12 +1,23 @@
+import { lazy, Suspense } from "react";
 import { HashRouter, Navigate, Route, Routes } from "react-router";
 import { ThemeProvider } from "./theme";
 import { Toaster } from "@/components/ui/sonner";
 import { Layout } from "./Layout";
-import { ImpastoPage } from "@/features/impasto/ImpastoPage";
-import { TempiPage } from "@/features/tempi/TempiPage";
-import { RisultatiPage } from "@/features/risultati/RisultatiPage";
-import { DiarioPage } from "@/features/diario/DiarioPage";
-import { FarinePage } from "@/features/farine/FarinePage";
+
+// Ogni scheda è un pezzo separato del codice, caricato solo quando la apri:
+// l'avvio dell'app sul telefono resta leggero anche quando le schede crescono.
+const named = <K extends string>(load: () => Promise<Record<K, React.ComponentType>>, name: K) =>
+  lazy(() => load().then((m) => ({ default: m[name] })));
+const ImpastoPage = named(() => import("@/features/impasto/ImpastoPage"), "ImpastoPage");
+const TempiPage = named(() => import("@/features/tempi/TempiPage"), "TempiPage");
+const RisultatiPage = named(() => import("@/features/risultati/RisultatiPage"), "RisultatiPage");
+const FarinePage = named(() => import("@/features/farine/FarinePage"), "FarinePage");
+const DiarioPage = named(() => import("@/features/diario/DiarioPage"), "DiarioPage");
+const TrialDetailPage = named(() => import("@/features/diario/TrialDetailPage"), "TrialDetailPage");
+
+const page = (el: React.ReactNode) => (
+  <Suspense fallback={<p className="py-10 text-center text-sm text-muted-foreground">Caricamento…</p>}>{el}</Suspense>
+);
 
 // HashRouter (indirizzi tipo .../#/tempi): funziona su GitHub Pages e in Capacitor
 // senza configurare il server, perché il percorso dopo # non arriva mai al server.
@@ -20,11 +31,12 @@ export function App() {
               su /impasto e non parte una transizione da una pagina vuota. */}
           <Route index element={<Navigate to="/impasto" replace />} />
           <Route element={<Layout />}>
-            <Route path="impasto" element={<ImpastoPage />} />
-            <Route path="tempi" element={<TempiPage />} />
-            <Route path="risultati" element={<RisultatiPage />} />
-            <Route path="farine" element={<FarinePage />} />
-            <Route path="diario" element={<DiarioPage />} />
+            <Route path="impasto" element={page(<ImpastoPage />)} />
+            <Route path="tempi" element={page(<TempiPage />)} />
+            <Route path="risultati" element={page(<RisultatiPage />)} />
+            <Route path="farine" element={page(<FarinePage />)} />
+            <Route path="diario" element={page(<DiarioPage />)} />
+            <Route path="diario/:id" element={page(<TrialDetailPage />)} />
           </Route>
           <Route path="*" element={<Navigate to="/impasto" replace />} />
         </Routes>

@@ -102,7 +102,26 @@ export type BlendProfile = {
   absorption: ProfileValue | null;
 };
 
-type NumericFlourField = "w" | "pl" | "protein" | "absorption";
+/** Umidità tipica di una farina di grano tenero, % (per legge al massimo 15,5 %). */
+export const TYPICAL_MOISTURE = 14.5;
+
+/**
+ * Proteine "tal quale" (sulla farina così com'è, con la sua umidità).
+ * Se la scheda le dà "su sostanza secca" le convertiamo: tq = ss × (1 − umidità).
+ * Così farine scritte nei due modi si possono confrontare e mescolare.
+ */
+export function proteinAsIs(f: Pick<Flour, "protein" | "proteinBasis">): number | null {
+  if (f.protein == null) return null;
+  return f.proteinBasis === "ss" ? f.protein * (1 - TYPICAL_MOISTURE / 100) : f.protein;
+}
+
+const FIELD_READERS = {
+  w: (f: Flour) => f.w,
+  pl: (f: Flour) => f.pl,
+  protein: (f: Flour) => proteinAsIs(f),
+  absorption: (f: Flour) => f.absorption,
+} as const;
+type NumericFlourField = keyof typeof FIELD_READERS;
 
 /**
  * Media pesata sui grammi di un dato della scheda tecnica, tra le farine che ce l'hanno.
@@ -112,7 +131,7 @@ function weighted(usages: FlourUsage[], field: NumericFlourField, totalGrams: nu
   let sum = 0;
   let weight = 0;
   for (const u of usages) {
-    const v = u.flour?.[field];
+    const v = u.flour ? FIELD_READERS[field](u.flour) : null;
     if (v == null || !Number.isFinite(v) || v <= 0 || u.grams <= 0) continue;
     sum += v * u.grams;
     weight += u.grams;

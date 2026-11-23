@@ -8,11 +8,15 @@ import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetT
 import { NumberField } from "@/components/form/NumberField";
 import { SelectField } from "@/components/form/SelectField";
 import { TextField } from "@/components/form/TextField";
-import { FLOUR_TYPES, type Flour } from "@/domain/model";
+import { FLOUR_TYPES, type Flour, type ProteinBasis } from "@/domain/model";
 import { FLOUR_TYPE_LABEL, createFlour, flourDisplayName } from "@/domain/presets";
 import { removeFlour, saveFlour } from "@/state/flours";
 
 const TYPE_OPTIONS = FLOUR_TYPES.map((t) => ({ value: t, label: FLOUR_TYPE_LABEL[t] }));
+const PROTEIN_BASIS_OPTIONS: { value: ProteinBasis; label: string }[] = [
+  { value: "tq", label: "Tal quale" },
+  { value: "ss", label: "Su sostanza secca" },
+];
 
 type Props = {
   open: boolean;
@@ -99,7 +103,17 @@ export function FlourFormSheet({ open, onOpenChange, flour, onSaved }: Props) {
           <NumberField label="Forza (W)" placeholder="es. 300" value={draft.w} onChange={(v) => set("w", v)} />
           <NumberField label="P/L" placeholder="es. 0,55" value={draft.pl} onChange={(v) => set("pl", v)} />
           <NumberField label="Proteine" unit="%" placeholder="es. 12,5" value={draft.protein} onChange={(v) => set("protein", v)} />
+          <SelectField
+            label="Proteine indicate"
+            value={draft.proteinBasis}
+            options={PROTEIN_BASIS_OPTIONS}
+            onChange={(v) => set("proteinBasis", v)}
+          />
           <NumberField label="Assorbimento" unit="%" placeholder="es. 60" value={draft.absorption} onChange={(v) => set("absorption", v)} />
+          <p className="col-span-2 -mt-1 text-xs text-muted-foreground">
+            Sulla scheda trovi “s.s.” (sostanza secca) o “tal quale”. L’app le riporta tutte a tal quale per confrontarle; l’assorbimento è già su
+            base standard.
+          </p>
           <div className="col-span-2 flex flex-col gap-1.5">
             <Label htmlFor={notesId} className="text-muted-foreground">
               Note

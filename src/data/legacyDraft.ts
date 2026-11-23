@@ -1,5 +1,5 @@
 import { DoughSchema, MIXER_TYPES, PREFERMENT_TYPES, YEAST_TYPES, type Dough, type MixerType } from "@/domain/model";
-import { newId } from "@/domain/presets";
+import { inferPhaseFlags, newId } from "@/domain/presets";
 
 /** Chiave usata dalla prima versione (legacy/index.html) per la bozza dell'impasto. */
 export const LEGACY_DRAFT_KEY = "banco-impasti-bozza";
@@ -41,18 +41,19 @@ export function convertLegacyDraft(raw: unknown): Dough | null {
       yeast: toNum(p.yeast),
       flourBlend: [],
     })),
-    phases: (Array.isArray(s.phases) ? (s.phases as LegacyPhase[]) : []).map((p) => ({
-      id: newId(),
-      name: typeof p.name === "string" ? p.name : "Fase",
-      hours: toNum(p.h),
-      temp: toNum(p.t),
-    })),
+    phases: (Array.isArray(s.phases) ? (s.phases as LegacyPhase[]) : []).map((p) => {
+      const name = typeof p.name === "string" ? p.name : "Fase";
+      return { id: newId(), name, hours: toNum(p.h), temp: toNum(p.t), ...inferPhaseFlags(name) };
+    }),
     targetDoughTemp: toNum(s.tfi),
     flourTemp: toNum(s.tFlour),
     prefermentTemp: toNum(s.tPf),
     mixer: oneOf(MIXER_TYPES, MIXER_BY_RISE[String(s.mixer)], "spiral"),
     flourW: toNum(s.wFlour),
     start: typeof s.start === "string" ? s.start : "",
+    ambientTemp: null,
+    ambientHumidity: null,
+    plan: { mode: "forward", targetReady: "", adapt: "yeast" },
   };
   const parsed = DoughSchema.safeParse(candidate);
   return parsed.success ? parsed.data : null;

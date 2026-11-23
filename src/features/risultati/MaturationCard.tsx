@@ -1,4 +1,4 @@
-import { Clock, Droplet, Flame, Wheat } from "lucide-react";
+import { Clock, Droplet, Flame, Scissors, Wheat } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -110,30 +110,38 @@ export function MaturationCard() {
         <SectionTitle>Programma</SectionTitle>
         {a.schedule ? (
           <ol className="relative ml-2 border-l border-border pl-5">
-            {a.schedule.map((s, i) => (
-              <li key={i} className="relative pb-4 last:pb-0">
-                <span
-                  className={cn(
-                    "absolute top-1 -left-[1.6rem] grid size-3 place-items-center rounded-full ring-4 ring-card",
-                    s.kind === "phase" ? BAND_BG[tempBand(s.temp)] : s.kind === "ready" ? "bg-primary" : "bg-foreground",
-                  )}
-                />
-                <div className="flex items-baseline justify-between gap-3 text-sm">
-                  <span className={cn(s.kind === "ready" && "font-bold")}>
-                    {s.kind === "ready" && <Flame className="mr-1 inline size-4 text-primary" />}
-                    {s.label}
-                    {s.kind === "phase" && <span className="text-muted-foreground"> · {fmt(s.hours, 1)} h a {fmt(s.temp, 0)} °C</span>}
-                  </span>
-                  <span className={cn("shrink-0 tabular-nums", s.kind === "ready" ? "font-bold" : "text-muted-foreground")}>
-                    {formatScheduleTime(s.at)}
-                  </span>
-                </div>
-              </li>
-            ))}
+            {a.schedule.steps.map((s, i) => {
+              const strong = s.kind === "ready" || s.kind === "balling" || s.kind === "start";
+              return (
+                <li key={i} className="relative pb-4 last:pb-0">
+                  <span
+                    className={cn(
+                      "absolute top-1 -left-[1.6rem] grid size-3 place-items-center rounded-full ring-4 ring-card",
+                      s.kind === "phase" ? BAND_BG[tempBand(s.temp)] : s.kind === "start" ? "bg-foreground" : "bg-primary",
+                    )}
+                  />
+                  <div className="flex items-baseline justify-between gap-3 text-sm">
+                    <span className={cn(strong && "font-bold")}>
+                      {s.kind === "ready" && <Flame className="mr-1 inline size-4 text-primary" />}
+                      {s.kind === "balling" && <Scissors className="mr-1 inline size-4 text-primary" />}
+                      {s.label}
+                      {s.kind === "phase" && (
+                        <span className="text-muted-foreground">
+                          {" "}
+                          · {fmt(s.hours, 1)} h a {fmt(s.temp, 0)} °C{s.balled ? " · in panetti" : ""}
+                          {s.adapted ? " · adattata a oggi" : ""}
+                        </span>
+                      )}
+                    </span>
+                    <span className={cn("shrink-0 tabular-nums", strong ? "font-bold" : "text-muted-foreground")}>{formatScheduleTime(s.at)}</span>
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         ) : (
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="size-4" /> Imposta l’ora di inizio e le fasi.
+            <Clock className="size-4" /> Imposta il programma nella scheda Tempi.
           </p>
         )}
 

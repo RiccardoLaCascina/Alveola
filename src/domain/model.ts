@@ -15,6 +15,7 @@ export const PREFERMENT_TYPES = ["biga", "poolish", "lmSolid", "lmLiquid", "cust
 export const MIXER_TYPES = ["hand", "fork", "diving", "planetary", "spiral"] as const;
 
 export const FLOUR_TYPES = ["00", "0", "1", "2", "integrale", "semola", "manitoba", "altro"] as const;
+export const PROTEIN_BASES = ["tq", "ss"] as const;
 
 const value = z.number().nullable();
 
@@ -31,6 +32,8 @@ export const FlourSchema = z.object({
   pl: value,
   /** proteine, % */
   protein: value,
+  /** come sono indicate le proteine sulla scheda: "tq" = tal quale, "ss" = su sostanza secca */
+  proteinBasis: z.enum(PROTEIN_BASES).default("tq"),
   /** assorbimento d'acqua (farinografo), % */
   absorption: value,
   notes: z.string(),
@@ -62,8 +65,28 @@ export const PhaseSchema = z.object({
   name: z.string(),
   /** durata, ore */
   hours: value,
-  /** temperatura, °C */
+  /** temperatura prevista, °C */
   temp: value,
+  /** fase a temperatura ambiente (puntata, appretto): oggi usa la temperatura del laboratorio */
+  ambient: z.boolean().default(false),
+  /** durante questa fase l'impasto è già in panetti (lo staglio avviene prima della prima fase in panetti) */
+  balled: z.boolean().default(false),
+});
+
+export const ADAPT_MODES = ["yeast", "times"] as const;
+export const PLAN_MODES = ["forward", "backward"] as const;
+
+export const PlanSchema = z.object({
+  /** forward = parto da un'ora di inizio; backward = voglio essere pronto a un'ora */
+  mode: z.enum(PLAN_MODES).default("forward"),
+  /** "pronto da cuocere" voluto, "YYYY-MM-DDTHH:mm" oppure "" */
+  targetReady: z.string().default(""),
+  /**
+   * Se oggi l'ambiente è diverso dalla temperatura prevista delle fasi ambiente:
+   * - yeast: i tempi restano, cambia la dose di lievito consigliata
+   * - times: il lievito resta, si adattano le durate delle fasi ambiente
+   */
+  adapt: z.enum(ADAPT_MODES).default("yeast"),
 });
 
 export const DoughSchema = z.object({
@@ -89,17 +112,26 @@ export const DoughSchema = z.object({
   flourW: value,
   /** inizio impasto, "YYYY-MM-DDTHH:mm" (ora locale) oppure "" */
   start: z.string(),
+  /** temperatura del laboratorio oggi, °C (usata dalle fasi ambiente) */
+  ambientTemp: value.default(null),
+  /** umidità relativa del laboratorio oggi, % (consigli sulla superficie dei panetti e sull'acqua) */
+  ambientHumidity: value.default(null),
+  plan: PlanSchema.default({ mode: "forward", targetReady: "", adapt: "yeast" }),
 });
 
 export type YeastType = (typeof YEAST_TYPES)[number];
 export type PrefermentType = (typeof PREFERMENT_TYPES)[number];
 export type MixerType = (typeof MIXER_TYPES)[number];
 export type FlourType = (typeof FLOUR_TYPES)[number];
+export type ProteinBasis = (typeof PROTEIN_BASES)[number];
 export type Flour = z.infer<typeof FlourSchema>;
 export type BlendPart = z.infer<typeof BlendPartSchema>;
 export type Preferment = z.infer<typeof PrefermentSchema>;
 export type Phase = z.infer<typeof PhaseSchema>;
 export type Dough = z.infer<typeof DoughSchema>;
+export type Plan = z.infer<typeof PlanSchema>;
+export type AdaptMode = (typeof ADAPT_MODES)[number];
+export type PlanMode = (typeof PLAN_MODES)[number];
 
 /** Segnalazione mostrata al pizzaiolo: "warning" = attenzione, "info" = conferma o spiegazione. */
 export type Flag = { tone: "warning" | "info"; message: string };

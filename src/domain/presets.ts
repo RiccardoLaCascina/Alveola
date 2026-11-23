@@ -46,11 +46,14 @@ export const MIXERS: Record<MixerType, { label: string; heatRise: number }> = {
   spiral: { label: "Spirale", heatRise: 5 },
 };
 
-export const PHASE_PRESETS: { label: string; name: string; hours: number; temp: number }[] = [
-  { label: "Puntata", name: "Puntata", hours: 2, temp: 22 },
-  { label: "Frigo", name: "Maturazione in frigo", hours: 24, temp: 4 },
-  { label: "Appretto", name: "Appretto", hours: 4, temp: 22 },
-  { label: "Altra", name: "Nuova fase", hours: 1, temp: 20 },
+type PhasePreset = { label: string; name: string; hours: number; temp: number; ambient: boolean; balled: boolean };
+
+/** Fasi tipiche: puntata e appretto a temperatura ambiente, frigo a temperatura fissa; l'appretto è in panetti. */
+export const PHASE_PRESETS: PhasePreset[] = [
+  { label: "Puntata", name: "Puntata", hours: 2, temp: 22, ambient: true, balled: false },
+  { label: "Frigo", name: "Maturazione in frigo", hours: 24, temp: 4, ambient: false, balled: false },
+  { label: "Appretto", name: "Appretto", hours: 4, temp: 22, ambient: true, balled: true },
+  { label: "Altra", name: "Nuova fase", hours: 1, temp: 20, ambient: false, balled: false },
 ];
 
 export function newId(): string {
@@ -69,7 +72,20 @@ export function createPreferment(type: PrefermentType): Preferment {
 
 /** Nuova farina vuota per il modulo di inserimento. */
 export function createFlour(now: number = Date.now()): Flour {
-  return { id: newId(), name: "", mill: "", type: "0", w: null, pl: null, protein: null, absorption: null, notes: "", createdAt: now, updatedAt: now };
+  return {
+    id: newId(),
+    name: "",
+    mill: "",
+    type: "0",
+    w: null,
+    pl: null,
+    protein: null,
+    proteinBasis: "tq",
+    absorption: null,
+    notes: "",
+    createdAt: now,
+    updatedAt: now,
+  };
 }
 
 /** Nome leggibile di una farina: prima il nome (la parte che distingue), poi il molino. */
@@ -78,8 +94,24 @@ export function flourDisplayName(f: Pick<Flour, "name" | "mill">): string {
   return f.mill.trim() ? `${name} · ${f.mill.trim()}` : name;
 }
 
-export function createPhase(name: string, hours: number, temp: number): Phase {
-  return { id: newId(), name, hours, temp };
+export function createPhase(name: string, hours: number, temp: number, flags: { ambient?: boolean; balled?: boolean } = {}): Phase {
+  return { id: newId(), name, hours, temp, ambient: flags.ambient ?? false, balled: flags.balled ?? false };
+}
+
+/**
+ * Per gli impasti salvati prima che esistessero i flag "ambiente" e "in panetti":
+ * li deduciamo dal nome della fase (puntata/appretto/lievitazione → ambiente; appretto/panetti → in panetti).
+ */
+export function inferPhaseFlags(name: string): { ambient: boolean; balled: boolean } {
+  const n = name.toLowerCase();
+  return {
+    ambient: /puntata|appretto|lievitaz/.test(n),
+    balled: /appretto|panett|pallin|stagli/.test(n),
+  };
+}
+
+export function createPhaseFromPreset(p: PhasePreset): Phase {
+  return createPhase(p.name, p.hours, p.temp, { ambient: p.ambient, balled: p.balled });
 }
 
 /** Ora locale arrotondata al quarto d'ora successivo, nel formato di <input type="datetime-local">. */
@@ -104,9 +136,9 @@ export function createDefaultDough(now: Date = new Date()): Dough {
     pieceWeight: 270,
     preferments: [],
     phases: [
-      createPhase("Puntata", 2, 22),
+      createPhase("Puntata", 2, 22, { ambient: true }),
       createPhase("Maturazione in frigo", 24, 4),
-      createPhase("Appretto", 4, 22),
+      createPhase("Appretto", 4, 22, { ambient: true, balled: true }),
     ],
     targetDoughTemp: 24,
     flourTemp: 20,
@@ -114,5 +146,8 @@ export function createDefaultDough(now: Date = new Date()): Dough {
     mixer: "spiral",
     flourW: null,
     start: nextQuarterHour(now),
+    ambientTemp: null,
+    ambientHumidity: null,
+    plan: { mode: "forward", targetReady: "", adapt: "yeast" },
   };
 }

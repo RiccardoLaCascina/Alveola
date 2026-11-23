@@ -31,7 +31,7 @@ export function Layout() {
           </div>
           <ThemeToggle />
         </div>
-        {!["/diario", "/farine"].includes(pathname) && <DoughSummary />}
+        {!["/diario", "/farine"].some((p) => pathname.startsWith(p)) && <DoughSummary />}
       </header>
 
       <main className="mx-auto max-w-xl px-4 pt-5 pb-[calc(7rem+env(safe-area-inset-bottom))]">

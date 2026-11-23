@@ -6,7 +6,7 @@ export function FlourSpecs({ flour }: { flour: Flour }) {
   const specs = [
     flour.w != null && `W ${fmt(flour.w)}`,
     flour.pl != null && `P/L ${fmt(flour.pl, 2)}`,
-    flour.protein != null && `${fmt(flour.protein, 1)} % prot.`,
+    flour.protein != null && `${fmt(flour.protein, 1)} % prot.${flour.proteinBasis === "ss" ? " s.s." : ""}`,
     flour.absorption != null && `ass. ${fmt(flour.absorption, 0)} %`,
   ].filter(Boolean) as string[];
 
