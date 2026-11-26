@@ -44,6 +44,14 @@ export const TrialSummarySchema = z.object({
   plannedReady: z.string(),
 });
 
+/** Consiglio di Claude salvato nella prova, per rileggerlo e verificare se ha funzionato. */
+export const AiFeedbackSchema = z.object({
+  text: z.string(),
+  /** modello che ha risposto */
+  model: z.string(),
+  createdAt: z.number(),
+});
+
 export const TrialSchema = z.object({
   id: z.string(),
   createdAt: z.number(),
@@ -75,6 +83,8 @@ export const TrialSchema = z.object({
   comment: z.string(),
   /** quando è stata valutata (ms) */
   ratedAt: z.number().nullable(),
+  /** ultimo consiglio di Claude su questa prova ("cosa cambio la prossima volta?"); null se non chiesto */
+  aiFeedback: AiFeedbackSchema.nullable().default(null),
 });
 
 export type Trial = z.infer<typeof TrialSchema>;
@@ -147,6 +157,16 @@ export function rateTrial(t: Trial, ratings: TrialRatings, comment: string, now:
     ratedAt: complete ? now : t.ratedAt,
     updatedAt: now,
   });
+}
+
+/** La prova con il consiglio di Claude salvato (sostituisce quello precedente). */
+export function withAiFeedback(t: Trial, text: string, model: string, now: number = Date.now()): Trial {
+  return TrialSchema.parse({ ...t, aiFeedback: { text: text.trim(), model, createdAt: now }, updatedAt: now });
+}
+
+/** C'è abbastanza per chiedere un consiglio: almeno un voto o un commento. */
+export function canAskFeedback(t: Pick<Trial, "ratings" | "comment">): boolean {
+  return RATING_KEYS.some((k) => t.ratings[k] != null) || t.comment.trim() !== "";
 }
 
 /**

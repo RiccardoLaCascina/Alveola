@@ -2,6 +2,7 @@ import { PageTitle } from "@/components/PageTitle";
 import { CompositionCard } from "./CompositionCard";
 import { MaturationCard } from "./MaturationCard";
 import { FlourCard } from "./FlourCard";
+import { AdviceCard } from "./AdviceCard";
 
 export function RisultatiPage() {
   return (
@@ -10,6 +11,7 @@ export function RisultatiPage() {
       <CompositionCard />
       <FlourCard />
       <MaturationCard />
+      <AdviceCard />
     </>
   );
 }

@@ -29,3 +29,12 @@ export function useTrial(id: string | undefined): Trial | null | undefined {
 
 export const saveTrial = (t: Trial) => trialRepository.save(t);
 export const removeTrial = (id: string) => trialRepository.remove(id);
+
+/**
+ * Aggiorna una prova partendo dalla versione salvata ADESSO (non da una copia vecchia in memoria):
+ * se nel frattempo è stata modificata, non perdiamo le modifiche. null se la prova non c'è più.
+ */
+export async function updateTrial(id: string, change: (t: Trial) => Trial): Promise<Trial | null> {
+  const current = await trialRepository.get(id);
+  return current ? trialRepository.save(change(current)) : null;
+}

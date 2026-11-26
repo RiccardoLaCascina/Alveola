@@ -27,6 +27,7 @@ import { normalizeBlend } from "@/domain/miscela";
 import { useDoughStore } from "@/state/doughStore";
 import { removeTrial, saveTrial, useTrial } from "@/state/trials";
 import { clockFromIso, formatTrialDate, trialTitle } from "./format";
+import { TrialFeedback } from "./TrialFeedback";
 
 /** Una prova del diario: fotografia dell'impasto, misure, e (dopo la cottura) voti e commento. */
 export function TrialDetailPage() {
@@ -229,6 +230,8 @@ function TrialEditor({ trial }: { trial: Trial }) {
           {dirty ? "Salva la prova" : "Prova salvata"}
         </Button>
       </div>
+
+      <TrialFeedback trial={trial} dirty={dirty} />
 
       <Dialog>
         <DialogTrigger asChild>
