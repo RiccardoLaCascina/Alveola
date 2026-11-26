@@ -12,6 +12,9 @@ export default defineConfig({
   resolve: {
     // "@/..." punta a src/: import più corti e indipendenti dalla cartella in cui sei.
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    // Una sola copia di React: senza, il bundler può includerne due e gli hook si rompono
+    // ("Invalid hook call", pagina bianca).
+    dedupe: ["react", "react-dom"],
   },
   plugins: [
     react(),

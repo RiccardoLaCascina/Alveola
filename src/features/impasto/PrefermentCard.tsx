@@ -43,7 +43,13 @@ export function PrefermentCard({ preferment: p }: { preferment: Preferment }) {
       </div>
       <div className="grid grid-cols-2 gap-3">
         <NumberField label="Peso totale" unit="g" value={p.weight} onChange={(v) => update(p.id, { weight: v })} />
-        <NumberField label="Idratazione" unit="%" value={p.hydration} onChange={(v) => update(p.id, { hydration: v })} />
+        <NumberField
+          label="Idratazione"
+          unit="%"
+          value={p.hydration}
+          onChange={(v) => update(p.id, { hydration: v })}
+          hint={p.hydration ? `${fmt(p.hydration)} g d’acqua ogni 100 g di farina` : "acqua ogni 100 g di farina"}
+        />
         {!sourdough && <NumberField label="Lievito fresco" unit="g" value={p.yeast} onChange={(v) => update(p.id, { yeast: v })} />}
       </div>
       <div className="mt-4">
@@ -78,6 +84,7 @@ export function PrefermentCard({ preferment: p }: { preferment: Preferment }) {
             onChange={(parts) => update(p.id, { flourBlend: parts })}
             context={`del prefermento ${PREFERMENT_PRESETS[p.type].label.toLowerCase()}`}
             emptyText="Scegli le farine di questo prefermento (es. biga 100 % manitoba)."
+            totalGrams={breakdown?.flour}
           />
         )}
       </div>

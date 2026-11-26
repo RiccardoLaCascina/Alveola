@@ -89,6 +89,29 @@ export const PlanSchema = z.object({
   adapt: z.enum(ADAPT_MODES).default("yeast"),
 });
 
+export const RECIPE_MODES = ["percent", "grams"] as const;
+
+/**
+ * Come il pizzaiolo scrive la ricetta.
+ * - percent: dice quanti panetti vuole e le percentuali (idratazione, sale, olio sulla farina totale);
+ *   i grammi in vasca li calcola l'app (vedi domain/ricetta.ts), togliendo farina e acqua dei prefermenti.
+ * - grams: scrive a mano i grammi da mettere in vasca.
+ */
+export const RecipeSchema = z.object({
+  mode: z.enum(RECIPE_MODES).default("grams"),
+  /** numero di panetti (il peso del panetto è `pieceWeight` dell'impasto) */
+  pieces: value.default(null),
+  /** idratazione totale voluta, % sulla farina totale */
+  hydration: value.default(null),
+  /** sale, % sulla farina totale */
+  salt: value.default(null),
+  /** olio / grassi, % sulla farina totale */
+  fat: value.default(null),
+});
+
+/** Ricetta "a grammi": usata per le bozze e le prove salvate prima che esistesse la ricetta in percentuale. */
+export const GRAMS_RECIPE: z.infer<typeof RecipeSchema> = { mode: "grams", pieces: null, hydration: null, salt: null, fat: null };
+
 export const DoughSchema = z.object({
   /** ingredienti aggiunti in vasca, esclusi i prefermenti, g */
   flour: value,
@@ -117,6 +140,7 @@ export const DoughSchema = z.object({
   /** umidità relativa del laboratorio oggi, % (consigli sulla superficie dei panetti e sull'acqua) */
   ambientHumidity: value.default(null),
   plan: PlanSchema.default({ mode: "forward", targetReady: "", adapt: "yeast" }),
+  recipe: RecipeSchema.default(GRAMS_RECIPE),
 });
 
 export type YeastType = (typeof YEAST_TYPES)[number];
@@ -130,6 +154,8 @@ export type Preferment = z.infer<typeof PrefermentSchema>;
 export type Phase = z.infer<typeof PhaseSchema>;
 export type Dough = z.infer<typeof DoughSchema>;
 export type Plan = z.infer<typeof PlanSchema>;
+export type Recipe = z.infer<typeof RecipeSchema>;
+export type RecipeMode = (typeof RECIPE_MODES)[number];
 export type AdaptMode = (typeof ADAPT_MODES)[number];
 export type PlanMode = (typeof PLAN_MODES)[number];
 

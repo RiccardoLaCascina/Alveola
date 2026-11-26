@@ -22,6 +22,8 @@ type NumberFieldProps = {
   disabled?: boolean;
   /** consente numeri negativi (temperature) */
   allowNegative?: boolean;
+  /** riga di aiuto sotto il campo (es. "= 65 % della farina") */
+  hint?: ReactNode;
   className?: string;
 };
 
@@ -31,8 +33,9 @@ type NumberFieldProps = {
   - tiene il testo mentre scrivi ("2," resta "2,"), ma comunica subito il numero allo stato;
   - se il valore cambia da fuori (es. "Usa questa dose", "Ricomincia") il testo si aggiorna.
 */
-export function NumberField({ label, value, onChange, unit, placeholder, disabled, allowNegative, className }: NumberFieldProps) {
+export function NumberField({ label, value, onChange, unit, placeholder, disabled, allowNegative, hint, className }: NumberFieldProps) {
   const id = useId();
+  const hintId = useId();
   const [text, setText] = useState(() => toText(value));
 
   useEffect(() => {
@@ -52,6 +55,7 @@ export function NumberField({ label, value, onChange, unit, placeholder, disable
           autoComplete="off"
           enterKeyHint="next"
           disabled={disabled}
+          aria-describedby={hint ? hintId : undefined}
           placeholder={placeholder}
           value={text}
           onChange={(e) => {
@@ -66,6 +70,11 @@ export function NumberField({ label, value, onChange, unit, placeholder, disable
           <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-muted-foreground">{unit}</span>
         )}
       </div>
+      {hint && (
+        <p id={hintId} className="text-xs leading-snug text-muted-foreground tabular-nums">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }

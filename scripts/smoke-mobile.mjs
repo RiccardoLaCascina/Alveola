@@ -66,7 +66,8 @@ async function waitFor(selector, timeout = 20000) {
 async function go(hash) {
   await send("Page.navigate", { url: base + hash });
   await waitFor("main h2");
-  await sleep(400);
+  // "main h2" c'è già durante il cambio pagina (animazione): aspetta che la nuova sia disegnata
+  await sleep(1200);
 }
 
 // stato pulito
@@ -82,9 +83,10 @@ const report = {};
 report.avvio = await summary();
 await shot("1-impasto");
 
-await typeInto("Farina", "1200");
+// ricetta in percentuale (predefinita): 8 panetti invece di 6 → i grammi si ricalcolano
+await typeInto("Panetti", "8");
 await sleep(200);
-report.dopoFarina1200 = await summary();
+report.dopo8Panetti = await summary();
 
 await clickText("Biga");
 await sleep(300);

@@ -133,7 +133,9 @@ export function createDefaultDough(now: Date = new Date()): Dough {
     fat: 0,
     yeastType: "fresh",
     yeast: 2,
-    pieceWeight: 270,
+    // 6 panetti da 280 g = 1680 g: con 65 % d'acqua, 2,8 % di sale e 2 g di lievito
+    // la ricetta in percentuale dà esattamente 1000 g di farina e 650 g d'acqua (i grammi qui sopra).
+    pieceWeight: 280,
     preferments: [],
     phases: [
       createPhase("Puntata", 2, 22, { ambient: true }),
@@ -149,5 +151,6 @@ export function createDefaultDough(now: Date = new Date()): Dough {
     ambientTemp: null,
     ambientHumidity: null,
     plan: { mode: "forward", targetReady: "", adapt: "yeast" },
+    recipe: { mode: "percent", pieces: 6, hydration: 65, salt: 2.8, fat: 0 },
   };
 }

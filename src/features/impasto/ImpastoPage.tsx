@@ -2,66 +2,60 @@ import { FlaskConical, Layers, Wheat } from "lucide-react";
 import { BlendEditor } from "./BlendEditor";
 import { Block } from "@/components/Block";
 import { PageTitle } from "@/components/PageTitle";
-import { NumberField } from "@/components/form/NumberField";
-import { SelectField } from "@/components/form/SelectField";
 import { AddChips } from "@/components/AddChips";
 import { EmptyHint } from "@/components/EmptyHint";
-import { PREFERMENT_TYPES, type YeastType } from "@/domain/model";
+import { PREFERMENT_TYPES } from "@/domain/model";
 import { PREFERMENT_SHORT_LABEL } from "@/domain/presets";
-import { useDoughStore } from "@/state/doughStore";
+import { useDoughAnalysis, useDoughStore } from "@/state/doughStore";
 import { PrefermentCard } from "./PrefermentCard";
+import { RecipeCard } from "./RecipeCard";
 import { ResetDough } from "./ResetDough";
 
-const YEAST_OPTIONS: { value: YeastType; label: string }[] = [
-  { value: "fresh", label: "Birra fresco" },
-  { value: "dry", label: "Birra secco" },
-  { value: "none", label: "Nessuno" },
-];
-
-const Dot = ({ className }: { className: string }) => <span className={`inline-block size-2.5 rounded-sm ${className}`} />;
-
+/*
+  La pagina segue l'ordine in cui ragiona il pizzaiolo:
+  1. con quali farine  →  2. quanto impasto e quanta acqua  →  3. (se serve) biga, poolish, lievito madre.
+*/
 export function ImpastoPage() {
   const dough = useDoughStore((s) => s.dough);
   const setField = useDoughStore((s) => s.setField);
   const addPreferment = useDoughStore((s) => s.addPreferment);
+  const c = useDoughAnalysis().composition;
+  const percentMode = dough.recipe.mode === "percent";
 
   return (
     <>
-      <PageTitle title="Impasto" subtitle="La ricetta di oggi, in grammi." />
+      <PageTitle title="Impasto" subtitle="Scegli le farine e quanto impasto vuoi: i grammi li calcolo io." />
 
-      <Block icon={Wheat} title="Impasto finale" hint="Quello che aggiungi nella vasca, esclusi i prefermenti.">
-        <div className="grid grid-cols-2 gap-3">
-          <NumberField label={<><Dot className="bg-flour" /> Farina</>} unit="g" value={dough.flour} onChange={(v) => setField("flour", v)} />
-          <NumberField label={<><Dot className="bg-water" /> Acqua</>} unit="g" value={dough.water} onChange={(v) => setField("water", v)} />
-          <NumberField label={<><Dot className="bg-muted-foreground/60" /> Sale</>} unit="g" value={dough.salt} onChange={(v) => setField("salt", v)} />
-          <NumberField label={<><Dot className="bg-muted-foreground/60" /> Olio / grassi</>} unit="g" value={dough.fat} onChange={(v) => setField("fat", v)} />
-        </div>
-        <h3 className="mt-5 mb-2 font-heading text-base font-bold">Lievito</h3>
-        <div className="grid grid-cols-2 gap-3">
-          <SelectField label="Tipo" value={dough.yeastType} options={YEAST_OPTIONS} onChange={(v) => setField("yeastType", v)} />
-          <NumberField
-            label="Quantità"
-            unit="g"
-            value={dough.yeast}
-            disabled={dough.yeastType === "none"}
-            onChange={(v) => setField("yeast", v)}
-          />
-        </div>
-      </Block>
-
-      <Block icon={Layers} title="Miscela di farine" hint="Le farine della vasca e la loro quota. I dati tecnici vengono dall’archivio Farine.">
+      <Block
+        icon={Layers}
+        title="1 · Le tue farine"
+        hint="Quali farine usi e quanta parte di ognuna, in % (in totale 100). Dalla loro scheda tecnica ricavo forza e acqua consigliata."
+      >
         <BlendEditor
           parts={dough.flourBlend}
           onChange={(parts) => setField("flourBlend", parts)}
           context="dell’impasto"
-          emptyText="Nessuna farina scelta: aggiungi quelle che usi per avere W, P/L, proteine e assorbimento della miscela."
+          totalGrams={c.flour}
+          emptyText="Facoltativo, ma utile: aggiungi le farine che usi e ti suggerisco l’idratazione giusta per loro."
         />
       </Block>
 
-      <Block icon={FlaskConical} title="Prefermenti" hint="Farina e acqua contenute nei prefermenti entrano nel calcolo dell’idratazione totale.">
+      <Block icon={Wheat} title="2 · Quanto impasto">
+        <RecipeCard />
+      </Block>
+
+      <Block
+        icon={FlaskConical}
+        title="3 · Biga, poolish, lievito madre"
+        hint={
+          percentMode
+            ? "Facoltativo. Farina e acqua che contengono contano nel totale: i grammi da mettere in vasca si riducono da soli."
+            : "Facoltativo. Farina e acqua che contengono si sommano a quelle della vasca nell’idratazione totale."
+        }
+      >
         <div className="flex flex-col gap-3">
           {dough.preferments.length === 0 ? (
-            <EmptyHint>Nessun prefermento: l’impasto è diretto. Aggiungine uno qui sotto.</EmptyHint>
+            <EmptyHint>Nessuno: impasto diretto. Se ne usi uno, aggiungilo qui sotto.</EmptyHint>
           ) : (
             dough.preferments.map((p) => <PrefermentCard key={p.id} preferment={p} />)
           )}

@@ -6,7 +6,7 @@ export function DoughSummary() {
   const a = useDoughAnalysis();
   const c = a.composition;
   const items = [
-    { label: "idratazione", value: c.totalFlour > 0 ? `${fmt(c.hydration, 1)} %` : "—" },
+    { label: "idratazione totale", value: c.totalFlour > 0 ? `${fmt(c.hydration, 1)} %` : "—" },
     { label: "peso impasto", value: c.totalWeight > 0 ? `${fmt(c.totalWeight)} g` : "—" },
     { label: "lievito consigliato", value: a.yeast ? `${fmtGrams(a.yeast.freshGrams)} g` : "—" },
   ];

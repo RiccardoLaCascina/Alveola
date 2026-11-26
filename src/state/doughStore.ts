@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { DoughSchema, type Dough, type Phase, type Plan, type Preferment, type PrefermentType } from "@/domain/model";
+import { DoughSchema, type Dough, type Phase, type Plan, type Preferment, type PrefermentType, type Recipe, type RecipeMode } from "@/domain/model";
+import { applyRecipe, recipeFromGrams } from "@/domain/ricetta";
 import {
   PHASE_PRESETS,
   PREFERMENT_PRESETS,
@@ -36,7 +37,7 @@ const draftStorage = {
   removeItem: (key: string) => localStorage.removeItem(key),
 };
 
-type ScalarKey = Exclude<keyof Dough, "preferments" | "phases" | "plan">;
+type ScalarKey = Exclude<keyof Dough, "preferments" | "phases" | "plan" | "recipe">;
 
 type DoughState = {
   dough: Dough;
@@ -48,6 +49,10 @@ type DoughState = {
   removePreferment: (id: string) => void;
   addPhase: (preset: (typeof PHASE_PRESETS)[number]) => void;
   setPlan: (patch: Partial<Plan>) => void;
+  /** Cambia panetti o percentuali della ricetta (i grammi si ricalcolano da soli). */
+  setRecipe: (patch: Partial<Omit<Recipe, "mode">>) => void;
+  /** Passa da "ricetta in percentuale" a "grammi a mano" e viceversa, senza far cambiare l'impasto. */
+  setRecipeMode: (mode: RecipeMode) => void;
   updatePhase: (id: string, patch: Partial<Omit<Phase, "id">>) => void;
   removePhase: (id: string) => void;
   reset: () => void;
@@ -60,7 +65,9 @@ const initialDough = (): Dough => readLegacyDraft() ?? createDefaultDough();
 export const useDoughStore = create<DoughState>()(
   persist(
     (set) => {
-      const patch = (fn: (d: Dough) => Partial<Dough>) => set((s) => ({ dough: { ...s.dough, ...fn(s.dough) } }));
+      // Dopo ogni modifica, se la ricetta è in percentuale i grammi in vasca si ricalcolano
+      // (es. aggiungi una biga: farina e acqua in vasca scendono, l'idratazione totale resta quella).
+      const patch = (fn: (d: Dough) => Partial<Dough>) => set((s) => ({ dough: applyRecipe({ ...s.dough, ...fn(s.dough) }) }));
       return {
         dough: initialDough(),
         setField: (key, value) => patch(() => ({ [key]: value })),
@@ -75,9 +82,12 @@ export const useDoughStore = create<DoughState>()(
         removePreferment: (id) => patch((d) => ({ preferments: d.preferments.filter((x) => x.id !== id) })),
         addPhase: (preset) => patch((d) => ({ phases: [...d.phases, createPhaseFromPreset(preset)] })),
         setPlan: (p) => patch((d) => ({ plan: { ...d.plan, ...p } })),
+        setRecipe: (p) => patch((d) => ({ recipe: { ...d.recipe, ...p } })),
+        setRecipeMode: (mode) =>
+          patch((d) => ({ recipe: mode === "percent" ? { ...d.recipe, ...recipeFromGrams(d), mode } : { ...d.recipe, mode } })),
         updatePhase: (id, p) => patch((d) => ({ phases: d.phases.map((x) => (x.id === id ? { ...x, ...p } : x)) })),
         removePhase: (id) => patch((d) => ({ phases: d.phases.filter((x) => x.id !== id) })),
-        reset: () => set({ dough: createDefaultDough() }),
+        reset: () => set({ dough: applyRecipe(createDefaultDough()) }),
         loadDough: (d) =>
           set({
             dough: DoughSchema.parse({

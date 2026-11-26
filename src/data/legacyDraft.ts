@@ -1,4 +1,4 @@
-import { DoughSchema, MIXER_TYPES, PREFERMENT_TYPES, YEAST_TYPES, type Dough, type MixerType } from "@/domain/model";
+import { DoughSchema, GRAMS_RECIPE, MIXER_TYPES, PREFERMENT_TYPES, YEAST_TYPES, type Dough, type MixerType } from "@/domain/model";
 import { inferPhaseFlags, newId } from "@/domain/presets";
 
 /** Chiave usata dalla prima versione (legacy/index.html) per la bozza dell'impasto. */
@@ -54,6 +54,8 @@ export function convertLegacyDraft(raw: unknown): Dough | null {
     ambientTemp: null,
     ambientHumidity: null,
     plan: { mode: "forward", targetReady: "", adapt: "yeast" },
+    // la prima versione ragionava solo in grammi
+    recipe: { ...GRAMS_RECIPE },
   };
   const parsed = DoughSchema.safeParse(candidate);
   return parsed.success ? parsed.data : null;

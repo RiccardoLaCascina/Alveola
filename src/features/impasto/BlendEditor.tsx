@@ -19,17 +19,21 @@ type Props = {
   emptyText: string;
   /** di quale miscela si tratta, per i lettori di schermo (es. "dell'impasto", "della biga") */
   context: string;
+  /** grammi di farina divisi da questa miscela: se c'è, accanto a ogni farina compaiono i suoi grammi */
+  totalGrams?: number;
 };
 
 /**
  * Editor di una miscela di farine: una riga per farina (scelta dall'archivio + quota in %),
  * la somma delle quote, e i pulsanti per aggiungere una farina esistente o crearne una nuova.
  */
-export function BlendEditor({ parts, onChange, emptyText, context }: Props) {
+export function BlendEditor({ parts, onChange, emptyText, context, totalGrams }: Props) {
   const { flours, loaded, failed } = useFlourArchive();
   const [creating, setCreating] = useState(false);
   const sum = blendSum(parts);
   const sumOk = Math.abs(sum - 100) <= BLEND_SUM_TOLERANCE;
+  // grammi di ogni farina: le quote vengono riproporzionate a 100 come nei calcoli
+  const gramsOf = (p: BlendPart) => (totalGrams && totalGrams > 0 && sum > 0 && p.percent && p.percent > 0 ? (totalGrams * p.percent) / sum : null);
 
   const addFlour = (flour: Flour | undefined) => {
     if (!flour) return;
@@ -58,25 +62,33 @@ export function BlendEditor({ parts, onChange, emptyText, context }: Props) {
           ...(flour ? [] : [{ value: p.flourId, label: fallbackLabel }]),
         ];
         const name = flour ? flourDisplayName(flour) : `farina ${i + 1}`;
+        const g = gramsOf(p);
         return (
-          <div key={i} className="grid grid-cols-[1fr_6.5rem_auto] items-end gap-2">
-            <SelectField ariaLabel={`Farina ${i + 1} della miscela ${context}`} value={p.flourId} options={options} onChange={(id) => update(i, { flourId: id })} />
-            <NumberField
-              label={
-                <>
-                  <span aria-hidden="true" className={cn(i > 0 && "sr-only")}>
-                    Quota
-                  </span>
-                  <span className="sr-only">{`Quota di ${name} nella miscela ${context}`}</span>
-                </>
-              }
-              unit="%"
-              value={p.percent}
-              onChange={(v) => update(i, { percent: v })}
-            />
-            <Button type="button" variant="ghost" size="icon" className="size-12 text-muted-foreground" aria-label={`Togli ${name} dalla miscela ${context}`} onClick={() => remove(i)}>
-              <Trash2 className="size-5" />
-            </Button>
+          <div key={i}>
+            <div className="grid grid-cols-[1fr_6.5rem_auto] items-end gap-2">
+              <SelectField ariaLabel={`Farina ${i + 1} della miscela ${context}`} value={p.flourId} options={options} onChange={(id) => update(i, { flourId: id })} />
+              <NumberField
+                label={
+                  <>
+                    <span aria-hidden="true" className={cn(i > 0 && "sr-only")}>
+                      Parte
+                    </span>
+                    <span className="sr-only">{`Parte di ${name} nella miscela ${context}, in percentuale`}</span>
+                  </>
+                }
+                unit="%"
+                value={p.percent}
+                onChange={(v) => update(i, { percent: v })}
+              />
+              <Button type="button" variant="ghost" size="icon" className="size-12 text-muted-foreground" aria-label={`Togli ${name} dalla miscela ${context}`} onClick={() => remove(i)}>
+                <Trash2 className="size-5" />
+              </Button>
+            </div>
+            {g !== null && (
+              <p className="mt-1 pl-1 text-xs text-muted-foreground tabular-nums">
+                = {fmt(g)} g di {name}
+              </p>
+            )}
           </div>
         );
       })}
